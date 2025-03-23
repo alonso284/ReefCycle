@@ -6,9 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		13433B532D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
+		13433B542D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		134336D42D8F8E7900E03BE3 /* ReefCycle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefCycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		134336EE2D8F8ECE00E03BE3 /* ReefMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13433B522D90835E00E03BE3 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,9 +35,58 @@
 		1343370A2D8F90C000E03BE3 /* Exceptions for "Model" folder in "ReefCycle" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Institution.swift,
+				ReefKeeper.swift,
+				ReefMaster.swift,
 				User.swift,
 			);
 			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
+		};
+		134339742D906C5600E03BE3 /* Exceptions for "Model" folder in "ReefMaster" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Institution.swift,
+				ReefKeeper.swift,
+				ReefMaster.swift,
+				User.swift,
+			);
+			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
+		};
+		134339812D90721A00E03BE3 /* Exceptions for "ViewModel" folder in "ReefCycle" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				InstitutionViewModel.swift,
+				ReefCycleViewModel.swift,
+				UserViewModel.swift,
+			);
+			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
+		};
+		134339822D90721A00E03BE3 /* Exceptions for "ViewModel" folder in "ReefMaster" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				InstitutionViewModel.swift,
+				ReefCycleViewModel.swift,
+				UserViewModel.swift,
+			);
+			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
+		};
+		13433B622D90959400E03BE3 /* Exceptions for "View" folder in "ReefCycle" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EditUserView.swift,
+				InstitutionView.swift,
+				UserView.swift,
+			);
+			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
+		};
+		13433B632D90959400E03BE3 /* Exceptions for "View" folder in "ReefMaster" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EditUserView.swift,
+				InstitutionView.swift,
+				UserView.swift,
+			);
+			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -56,13 +111,27 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1343370A2D8F90C000E03BE3 /* Exceptions for "Model" folder in "ReefCycle" target */,
+				134339742D906C5600E03BE3 /* Exceptions for "Model" folder in "ReefMaster" target */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
 		134337072D8F90A800E03BE3 /* ViewModel */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				134339812D90721A00E03BE3 /* Exceptions for "ViewModel" folder in "ReefCycle" target */,
+				134339822D90721A00E03BE3 /* Exceptions for "ViewModel" folder in "ReefMaster" target */,
+			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		13433B4D2D907D4F00E03BE3 /* View */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				13433B622D90959400E03BE3 /* Exceptions for "View" folder in "ReefCycle" target */,
+				13433B632D90959400E03BE3 /* Exceptions for "View" folder in "ReefMaster" target */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -107,8 +176,10 @@
 		134337042D8F908800E03BE3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				13433B4D2D907D4F00E03BE3 /* View */,
 				134337052D8F909400E03BE3 /* Model */,
 				134337072D8F90A800E03BE3 /* ViewModel */,
+				13433B522D90835E00E03BE3 /* Config.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -220,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13433B532D90835E00E03BE3 /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13433B542D90835E00E03BE3 /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
