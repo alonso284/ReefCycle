@@ -14,7 +14,7 @@ struct EditUserView: View {
     @State var username: String = ""
     
     var body: some View {
-        VStack {
+        Form {
             TextField("username", text: $username)
             Button("Save", action: {
                 Task {

@@ -14,6 +14,12 @@ import UIKit
 class ReefCycleViewModel {
     
     private(set) var user: User?
+    private(set) var institutions: [Institution]?
+    
+    func fetchInstitutions() async throws {
+        let record = try await Config.publicDatabase.fetchAllRecords(ofType: Institution.recordType, inZone: nil)
+        institutions = record.compactMap { Institution(record: $0) }
+    }
     
     func fetchUser() async throws {
         let userRecordID = try await Config.container.userRecordID()

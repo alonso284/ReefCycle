@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     let pendingReefKeeperVM: PendingReefKeeperViewModel
+    @State var triedLoadingKeeper: Bool = false
     
     var body: some View {
         if let reefKeeper = pendingReefKeeperVM.reefKeeper {
@@ -28,16 +29,21 @@ struct MainTabView: View {
                     }
             }
         } else {
-            ProgressView()
-                .task {
-                    await loadReefKeeper()
-                }
+            if triedLoadingKeeper {
+                EditKeeperView(pendingReefKeeperVM: pendingReefKeeperVM)
+            } else {
+                ProgressView()
+                    .task {
+                        await loadReefKeeper()
+                    }
+            }
         }
     }
     
     func loadReefKeeper() async {
         do {
             try await pendingReefKeeperVM.fetchReefKeeper()
+            triedLoadingKeeper = true
         } catch {
             print(error)
         }

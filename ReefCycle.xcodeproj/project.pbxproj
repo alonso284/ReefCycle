@@ -9,12 +9,15 @@
 /* Begin PBXBuildFile section */
 		13433B532D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
 		13433B542D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
+		135FEC3B2D922587002F4A91 /* Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135FEC3A2D922587002F4A91 /* Queries.swift */; };
+		135FEC3C2D922587002F4A91 /* Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135FEC3A2D922587002F4A91 /* Queries.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		134336D42D8F8E7900E03BE3 /* ReefCycle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefCycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		134336EE2D8F8ECE00E03BE3 /* ReefMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13433B522D90835E00E03BE3 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		135FEC3A2D922587002F4A91 /* Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queries.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -180,6 +183,7 @@
 				134337052D8F909400E03BE3 /* Model */,
 				134337072D8F90A800E03BE3 /* ViewModel */,
 				13433B522D90835E00E03BE3 /* Config.swift */,
+				135FEC3A2D922587002F4A91 /* Queries.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -292,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13433B532D90835E00E03BE3 /* Config.swift in Sources */,
+				135FEC3B2D922587002F4A91 /* Queries.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13433B542D90835E00E03BE3 /* Config.swift in Sources */,
+				135FEC3C2D922587002F4A91 /* Queries.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

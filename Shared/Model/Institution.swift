@@ -7,11 +7,13 @@
 
 import Foundation
 import CloudKit
+import UIKit
 
 struct Institution {
     private let record:                 CKRecord
     private(set) var name:              String
     private(set) var code:              String
+    private(set) var logo:              CKAsset
 }
 
 extension Institution: Identifiable, Comparable, Hashable, Equatable {
@@ -38,16 +40,18 @@ extension Institution {
     /// Populates a record with the data for this contact.
     init?(record: CKRecord) {
         guard let code = record[.institution_code] as? String,
-              let name = record[.institution_name] as? String
+              let name = record[.institution_name] as? String,
+              let logo = record[.institution_logo] as? CKAsset
         else {
             return nil
         }
         
-        self.init(record: record, name: name, code: code)
+        self.init(record: record, name: name, code: code, logo: logo)
     }
 }
 
 extension CKRecord.FieldKey {
     static let institution_code    = "code"
     static let institution_name    = "name"
+    static let institution_logo    = "logo"
 }
