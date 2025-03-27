@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 
 struct ReefKeeper {
-    private let record:                 CKRecord
+    let record:                 CKRecord
     private(set) var id:                String
     private(set) var points:            Int
     private(set) var institution:       CKRecord.Reference

@@ -11,7 +11,6 @@ import CloudKit
 struct User {
     let record:                  CKRecord
     private(set) var username:           String
-//    private(set) points:             Int
 //    private(set) emoji:              String
     
     private(set) var reefKeeper:         CKRecord.Reference?

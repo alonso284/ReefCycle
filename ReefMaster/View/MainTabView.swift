@@ -17,10 +17,10 @@ struct MainTabView: View {
         if let reefMaster = pendingReefMasterVM.reefMaster {
             let reefMasterVM = ReefMasterViewModel(reefKeeper: reefMaster)
             TabView {
-//                KeeperReefView(reefKeeperVM: reefKeeperVM)
-//                    .tabItem {
-//                        Label("Reef", systemImage: "fish")
-//                    }
+                ReefKeepersViewModel(reefMasterVM: reefMasterVM)
+                    .tabItem {
+                        Label("ReefKeepers", systemImage: "person.2")
+                    }
 //                StoreView(reefKeeperVM: reefKeeperVM)
 //                    .tabItem {
 //                        Label("Store", systemImage: "storefront")
