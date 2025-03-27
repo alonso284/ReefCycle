@@ -31,6 +31,9 @@ struct KeeperProfileView: View {
                 if let user {
                     let userVM = UserViewModel(user: user)
                     UserView(userVM: userVM)
+                    if let date = user.record.creationDate {
+                        Text("Member since \(date.description)")
+                    }
                 }else {
                     ProgressView()
                         .task {

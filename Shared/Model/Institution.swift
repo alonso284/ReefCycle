@@ -14,6 +14,7 @@ struct Institution {
     private(set) var name:              String
     private(set) var code:              String
     private(set) var logo:              CKAsset
+    private(set) var location:          CLLocation?
 }
 
 extension Institution: Identifiable, Comparable, Hashable, Equatable {
@@ -41,12 +42,14 @@ extension Institution {
     init?(record: CKRecord) {
         guard let code = record[.institution_code] as? String,
               let name = record[.institution_name] as? String,
-              let logo = record[.institution_logo] as? CKAsset
+              let logo = record[.institution_logo] as? CKAsset,
+              let location = record[.institution_location] as? CLLocation?
         else {
             return nil
         }
         
-        self.init(record: record, name: name, code: code, logo: logo)
+        print(record)
+        self.init(record: record, name: name, code: code, logo: logo, location: location)
     }
 }
 
@@ -54,4 +57,5 @@ extension CKRecord.FieldKey {
     static let institution_code    = "code"
     static let institution_name    = "name"
     static let institution_logo    = "logo"
+    static let institution_location = "location"
 }

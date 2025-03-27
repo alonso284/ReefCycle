@@ -27,6 +27,10 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
+                InstitutionsView()
+                    .tabItem {
+                        Label("Institutions", systemImage: "house.lodge")
+                    }
             }
         } else {
             if triedLoadingKeeper {

@@ -14,7 +14,7 @@ struct ContentView: View {
 
     var body: some View {
         if let user = reefVM.user {
-            Text("Here")
+            MainTabView(pendingReefMasterVM: PendingReefMasterViewModel(user: user))
         } else {
             if triedLoadingUser {
                 EditUserView()
@@ -25,6 +25,7 @@ struct ContentView: View {
                     }
             }
         }
+
     }
     
     func loadUser() async {
@@ -35,7 +36,6 @@ struct ContentView: View {
             print(error)
         }
     }
-
 }
 
 //#Preview {
