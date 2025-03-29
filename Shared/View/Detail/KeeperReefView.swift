@@ -1,3 +1,4 @@
+
 //
 //  ReefView.swift
 //  ReefCycle
@@ -17,7 +18,7 @@ struct KeeperReefView: View {
         ZStack {
             Color.clear
                        .overlay (
-                           Image("ReefBackground")
+                           Image("ReefBackgroundWide")
                                .resizable()
                                .aspectRatio(contentMode: .fill)
 //                               .border(.blue, width: 2)
@@ -44,13 +45,11 @@ struct KeeperReefView: View {
                     .offset(y: -30)
                 Spacer()
             }
-            
-//            .navigationTitle("Reef")
         }
     }
     
     var background: some View {
-        RoundedRectangle(cornerRadius: 20).foregroundStyle(.gray.opacity(0.6))
+        RoundedRectangle(cornerRadius: 20).foregroundStyle(Color(UIColor.secondarySystemBackground).opacity(0.7))
     }
     
 //    func loadInstitution() async {

@@ -25,7 +25,7 @@ struct MainTabView: View {
 //            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
             
             TabView {
-//                Group {
+                Group {
 //                    if UIDevice.current.userInterfaceIdiom == .phone {
                         NavigationStack {
                             KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
@@ -38,10 +38,16 @@ struct MainTabView: View {
                                         }
                                 })
                                 .toolbar {
-                                    Button("Edit", action: {
-                                        editing = true
-                                    })
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Button(action: {
+                                            editing = true
+                                        }) {
+                                            Image(systemName: "backpack")
+                                                .foregroundColor(.white) // Customize your color here
+                                        }
+                                    }
                                 }
+
                         }
 //                    } else {
 //                        NavigationSplitView(sidebar: {
@@ -55,7 +61,7 @@ struct MainTabView: View {
 //                                }
 //                        })
 //                    }
-//                }
+                }
                 .tabItem {
                     Label("Reef", systemImage: "fish")
                 }
@@ -67,6 +73,8 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Ranking", systemImage: "star")
                     }
+                
+                
                 PlasticClassifierView()
                     .tabItem {
                         Label("Classifier", systemImage: "camera")
