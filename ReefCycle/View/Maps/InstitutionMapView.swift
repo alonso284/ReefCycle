@@ -13,14 +13,15 @@ struct InstitutionCardView: View {
         let coordinate = institution.location?.coordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
         _region = State(initialValue: MKCoordinateRegion(
             center: coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         ))
     }
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
             // Map on the left
-            Map(coordinateRegion: $region, annotationItems: [institution]) { inst in
+         
+            Map(coordinateRegion: $region, interactionModes: [], annotationItems: [institution] ) { inst in
                 MapAnnotation(coordinate: inst.location?.coordinate ?? CLLocationCoordinate2D()) {
                     Image(systemName: "mappin.circle.fill")
                         .font(.title)
@@ -28,11 +29,11 @@ struct InstitutionCardView: View {
                         .background(Circle().fill(Color.white))
                 }
             }
-            .frame(maxHeight: .infinity)
-            .cornerRadius(12, corners: [.topLeft, .bottomLeft])
+            .frame(maxWidth: UIScreen.main.bounds.width * 0.6,maxHeight: .infinity)
+            .cornerRadius(90)
             
             // Institution info on the right
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .center, spacing: 12) {
                 if let uiImage = loadImageFromAsset(institution.logo) {
                     Image(uiImage: uiImage)
                         .resizable()
@@ -49,12 +50,8 @@ struct InstitutionCardView: View {
                 }
                 
                 Text(institution.name)
-                    .font(.headline)
-                    .multilineTextAlignment(.leading)
-                
-                Text("Code: \(institution.code)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
                 
                 Spacer()
             }
@@ -119,16 +116,20 @@ struct InstitutionCardView_Previews: PreviewProvider {
         record[.institution_logo] = CKAsset(fileURL: tempURL)
         
         // Mock location for Monterrey, Mexico
-        record[.institution_location] = CLLocation(latitude: 25.6714, longitude: -100.309)
+        record[.institution_location] = CLLocation(latitude: 25.650888, longitude: -100.2900)
         
         // Create a mock Institution using the proper initializer
-        guard let mockInstitution = Institution(record: record) else {
-            return Text("Failed to create mock institution")
-                .previewLayout(.sizeThatFits)
-        }
-        
-        return InstitutionCardView(institution: mockInstitution)
-            .previewLayout(.sizeThatFits)
-            .padding()
+        if let mockInstitution = Institution(record: record) {
+                    return AnyView(
+                        InstitutionCardView(institution: mockInstitution)
+                            .previewLayout(.sizeThatFits)
+                            .padding()
+                    )
+                } else {
+                    return AnyView(
+                        Text("Failed to create mock institution")
+                            .previewLayout(.sizeThatFits)
+                    )
+                }
     }
 }
