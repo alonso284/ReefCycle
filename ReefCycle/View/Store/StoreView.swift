@@ -14,76 +14,93 @@ struct StoreView: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    let reefKeeperVM: ReefKeeperViewModel
+    let reefKeeperVM: OwnedReefKeeperViewModel
     
     var body: some View {
         NavigationStack {
             List {
-                Section("Skins") {
-                    ForEach(Skin.allCases, id: \.self) { skin in
-                        let isOwned = skins.contains(where: { $0.skin == skin })
 
-                        Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned")")
-                            .onTapGesture {
-                                Task {
-                                    if isOwned {
-                                        do {
-                                            try await reefKeeperVM.selectSkin(skin: skin)
-                                        } catch {
-                                            print("Failed to select skin: \(error)")
-                                        }
-                                    } else {
-                                        await buySkin(skin: skin)
-                                    }
-                                }
-                            }
-                    }
-                }
-
-                Section("Hats") {
-                    ForEach(Hat.allCases, id: \.self) { hat in
-                        let isOwned = hats.contains(where: { $0.hat == hat })
-
-                        Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned")")
-                            .onTapGesture {
-                                Task {
-                                    if isOwned {
-                                        do {
-                                            try await reefKeeperVM.selectHat(hat: hat)
-                                        } catch {
-                                            print("Failed to select hat: \(error)")
-                                        }
-                                    } else {
-                                        await buyHat(hat: hat)
-                                    }
-                                }
-                            }
-                    }
-                }
-
-                Section("Tools") {
-                    ForEach(Tool.allCases, id: \.self) { tool in
-                        let isOwned = tools.contains(where: { $0.tool == tool })
-
-                        Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned")")
-                            .onTapGesture {
-                                Task {
-                                    if isOwned {
-                                        do {
-                                            try await reefKeeperVM.selectTool(tool: tool)
-                                        } catch {
-                                            print("Failed to select tool: \(error)")
-                                        }
-                                    } else {
-                                        await buyTool(tool: tool)
-                                    }
-                                }
-                            }
-                    }
-                }
+                skinsView
+                hatsView
+                toolsView
             }
             
             .navigationTitle("Store")
+        }
+    }
+    
+    var skinsView: some View {
+        Section("Skins") {
+            ForEach(Skin.allCases, id: \.self) { skin in
+                let isOwned = skins.contains { $0.skin == skin }
+                let isSelected = reefKeeperVM.reefKeeper.skin == skin
+
+                Button(action: {
+                    Task {
+                        if isOwned {
+                            do {
+                                try await reefKeeperVM.selectSkin(skin: skin)
+                            } catch {
+                                print("Failed to select skin: \(error)")
+                            }
+                        } else {
+                            await buySkin(skin: skin)
+                        }
+                    }
+                }) {
+                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                }
+            }
+        }
+    }
+    
+    var hatsView: some View {
+        Section("Hats") {
+            ForEach(Hat.allCases, id: \.self) { hat in
+                let isOwned = hats.contains { $0.hat == hat }
+                let isSelected = reefKeeperVM.reefKeeper.hat == hat
+
+                Button(action: {
+                    Task {
+                        if isOwned {
+                            do {
+                                try await reefKeeperVM.selectHat(hat: hat)
+                            } catch {
+                                print("Failed to select hat: \(error)")
+                            }
+                        } else {
+                            await buyHat(hat: hat)
+                        }
+                    }
+                }) {
+                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                }
+            }
+        }
+    }
+
+    var toolsView: some View {
+        Section("Tools") {
+            ForEach(Tool.allCases, id: \.self) { tool in
+                let isOwned = tools.contains { $0.tool == tool }
+                let isSelected = reefKeeperVM.reefKeeper.tool == tool
+
+                Button(action: {
+                    Task {
+                        if isOwned {
+                            do {
+                                try await reefKeeperVM.selectTool(tool: tool)
+                            } catch {
+                                print("Failed to select tool: \(error)")
+                            }
+                        } else {
+                            await buyTool(tool: tool)
+                        }
+                    }
+                }) {
+                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                }
+            }
         }
     }
     

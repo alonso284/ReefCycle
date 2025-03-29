@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		132AE3152D97A92F004CC560 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 132AE3142D97A92F004CC560 /* Media.xcassets */; };
+		132AE3162D97A92F004CC560 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 132AE3142D97A92F004CC560 /* Media.xcassets */; };
 		13433B532D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
 		13433B542D90835E00E03BE3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13433B522D90835E00E03BE3 /* Config.swift */; };
 		135FEC3B2D922587002F4A91 /* Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 135FEC3A2D922587002F4A91 /* Queries.swift */; };
@@ -14,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		132AE3142D97A92F004CC560 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		134336D42D8F8E7900E03BE3 /* ReefCycle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefCycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		134336EE2D8F8ECE00E03BE3 /* ReefMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReefMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13433B522D90835E00E03BE3 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
@@ -62,6 +65,7 @@
 			membershipExceptions = (
 				InstitutionViewModel.swift,
 				ReefCycleViewModel.swift,
+				ReefKeeperViewModel.swift,
 				UserViewModel.swift,
 			);
 			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
@@ -71,6 +75,7 @@
 			membershipExceptions = (
 				InstitutionViewModel.swift,
 				ReefCycleViewModel.swift,
+				ReefKeeperViewModel.swift,
 				UserViewModel.swift,
 			);
 			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
@@ -78,26 +83,32 @@
 		13433B622D90959400E03BE3 /* Exceptions for "View" folder in "ReefCycle" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Detail/InstitutionView.swift,
+				Detail/KeeperReefView.swift,
+				Detail/UserView.swift,
 				EditUserView.swift,
-				InstitutionView.swift,
 				LeaderBoards/InstitutionsView.swift,
 				LeaderBoards/LeaderBoardsView.swift,
 				LeaderBoards/ReefKeepersView.swift,
+				Preview/InstitutionPreview.swift,
+				Preview/ReefKeeperPreview.swift,
 				ReefyView.swift,
-				UserView.swift,
 			);
 			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
 		};
 		13433B632D90959400E03BE3 /* Exceptions for "View" folder in "ReefMaster" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Detail/InstitutionView.swift,
+				Detail/KeeperReefView.swift,
+				Detail/UserView.swift,
 				EditUserView.swift,
-				InstitutionView.swift,
 				LeaderBoards/InstitutionsView.swift,
 				LeaderBoards/LeaderBoardsView.swift,
 				LeaderBoards/ReefKeepersView.swift,
+				Preview/InstitutionPreview.swift,
+				Preview/ReefKeeperPreview.swift,
 				ReefyView.swift,
-				UserView.swift,
 			);
 			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
 		};
@@ -194,6 +205,7 @@
 				134337072D8F90A800E03BE3 /* ViewModel */,
 				13433B522D90835E00E03BE3 /* Config.swift */,
 				135FEC3A2D922587002F4A91 /* Queries.swift */,
+				132AE3142D97A92F004CC560 /* Media.xcassets */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -288,6 +300,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				132AE3152D97A92F004CC560 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +308,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				132AE3162D97A92F004CC560 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

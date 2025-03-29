@@ -8,24 +8,38 @@
 import SwiftUI
 
 struct ReefyView: View {
-    let reefKeeper: ReefKeeper
+    let reefKeeperVM: ReefKeeperViewModel
     
-    var skin: Skin {
-        reefKeeper.skin ?? .light
+    private var skin: Skin? {
+        reefKeeperVM.reefKeeper.skin
     }
-    var hat: Hat? {
-        reefKeeper.hat
+    private var hat: Hat? {
+        reefKeeperVM.reefKeeper.hat
     }
-    var tool: Tool? {
-        reefKeeper.tool
+    private var tool: Tool? {
+        reefKeeperVM.reefKeeper.tool
     }
     
     var body: some View {
-        VStack {
-            Text(skin.rawValue)
-            Text(hat?.rawValue ?? "No Hat")
-            Text(tool?.rawValue ?? "No Tool")
+        ZStack {
+            Image(skin?.rawValue ?? "ReefyBlue")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 500, height: 500)
+            if let hat {
+                Image(hat.rawValue)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500, height: 500)
+            }
+            if let tool {
+                Image(tool.rawValue)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500, height: 500)
+            }
         }
+        
     }
 }
 

@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import SwiftUI
 import CloudKit
 
 struct User {
-    let record:                  CKRecord
-    private(set) var username:           String
-//    private(set) emoji:              String
+    let record:                     CKRecord
+    private(set) var username:      String
+    private(set) var emoji:         String
+    private(set) var color:         Color
     
     private(set) var reefKeeper:         CKRecord.Reference?
     private(set) var reefMaster:         CKRecord.Reference?
@@ -54,7 +56,7 @@ extension User {
 //        let tags = tags_rawValues?.compactMap { Activity.Tag(rawValue: $0) } ?? []
 //        guard let color = colorHex.toColor() else { return nil }
         
-        self.init(record: record, username: username, reefKeeper: reefKeeper)
+        self.init(record: record, username: username, emoji: "💀", color: .blue, reefKeeper: reefKeeper)
     }
 }
 //

@@ -18,9 +18,10 @@ struct ReefKeepersView: View {
             Section("reefKeepers"){
                 ForEach(reefKeepers) {
                     reefKeeper in
-                    VStack {
-                        Text(reefKeeper.id) + Text(String(reefKeeper.points))
-                    }
+                    let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
+                    NavigationLink(destination: { ReefyView(reefKeeperVM: reefKeeperVM) }, label: {
+                        ReefKeeperPreview(reefKeeperVM: reefKeeperVM)
+                    })
                 }
             }
         } else {

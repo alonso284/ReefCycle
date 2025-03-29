@@ -18,12 +18,10 @@ struct InstitutionsView: View {
             Section("Institutions"){
                 ForEach(institutions) {
                     institution in
-                    VStack {
-                        Text(institution.name)
-                        if let location = institution.location {
-                            Text("\(location.altitude)")
-                        }
-                    }
+                    let institutionVM = InstitutionViewModel(institution: institution)
+                    NavigationLink(destination: { InstitutionView(institutionVM: institutionVM) }, label: {
+                        InstitutionPreview(institutionVM: institutionVM)
+                    })
                 }
             }
         } else {

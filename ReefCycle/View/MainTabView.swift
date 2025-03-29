@@ -13,9 +13,9 @@ struct MainTabView: View {
     
     var body: some View {
         if let reefKeeper = pendingReefKeeperVM.reefKeeper {
-            let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
+            let reefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
             TabView {
-                KeeperReefView(reefKeeperVM: reefKeeperVM)
+                KeeperReefView(reefKeeperVM: ReefKeeperViewModel(reefKeeper: reefKeeperVM.reefKeeper))
                     .tabItem {
                         Label("Reef", systemImage: "fish")
                     }
