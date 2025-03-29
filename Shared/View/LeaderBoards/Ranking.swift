@@ -14,7 +14,8 @@ struct Ranking: View {
         NavigationStack {
             List {
                 InstitutionsView()
-                ReefKeepersView()
+//                ReefKeepersView()
+//                Text(String(reefVM.users?.count ?? -1))
             }
             .refreshable {
                 await loadLeaderBoards()

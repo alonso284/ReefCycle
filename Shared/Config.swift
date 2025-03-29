@@ -12,7 +12,7 @@ enum RecordType: String, Codable, CaseIterable {
     case Institution    = "Institution"
     case ReefKeeper     = "ReefKeeper"
     case ReefMaster     = "ReefMaster"
-    case User           = "User"
+    case User           = "Users"
 }
 
 enum Config {

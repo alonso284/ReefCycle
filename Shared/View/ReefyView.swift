@@ -19,24 +19,25 @@ struct ReefyView: View {
     private var tool: Tool? {
         reefKeeper.tool
     }
+    var size: CGFloat = 500
     
     var body: some View {
         ZStack {
             Image(skin?.rawValue ?? "ReefyBlue")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 500, height: 500)
+                .frame(width: size, height: size)
             if let hat {
                 Image(hat.rawValue)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 500, height: 500)
+                    .frame(width: size, height: size)
             }
             if let tool {
                 Image(tool.rawValue)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 500, height: 500)
+                    .frame(width: size, height: size)
             }
         }
         

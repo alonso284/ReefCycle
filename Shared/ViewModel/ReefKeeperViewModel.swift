@@ -29,7 +29,8 @@ class ReefKeeperViewModel {
     }
     
     func fetchUser() async throws {
-        let record = try await Config.publicDatabase.record(for: reefKeeper.user.recordID)
+        guard let userRef = reefKeeper.user else {return }
+        let record = try await Config.publicDatabase.record(for: userRef.recordID)
         guard let user = User(record: record) else {
             print("Cloudnt load user")
             return
