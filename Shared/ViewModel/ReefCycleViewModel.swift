@@ -16,10 +16,20 @@ class ReefCycleViewModel {
     private(set) var user: User?
     private(set) var institutions: [Institution]?
     private(set) var reefKeepers: [ReefKeeper]?
+    private(set) var users: [User]?
     
     func fetchInstitutions() async throws {
         let record = try await Config.publicDatabase.fetchAllRecords(ofType: Institution.recordType, inZone: nil)
         institutions = record.compactMap { Institution(record: $0) }
+    }
+    
+    func fetchUsers() async throws {
+        let record = try await Config.publicDatabase.fetchAllRecords(ofType: User.recordType, inZone: nil)
+        users = record.compactMap { User(record: $0) }
+    }
+    
+    func user(id: CKRecord.ID) -> User? {
+        return users?.first(where: { $0.id == id })
     }
     
     func fetchReefKeepers() async throws {

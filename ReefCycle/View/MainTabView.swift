@@ -8,23 +8,29 @@
 import SwiftUI
 
 struct MainTabView: View {
-    let pendingReefKeeperVM: PendingReefKeeperViewModel
+    @State var pendingReefKeeperVM: PendingReefKeeperViewModel
+    var reefKeeper: ReefKeeper? {
+        pendingReefKeeperVM.reefKeeper
+    }
+    var institution: Institution? {
+        pendingReefKeeperVM.institution
+    }
     @State var triedLoadingKeeper: Bool = false
     
-        @State var editing: Bool = false
+    @State var editing: Bool = false
     
     var body: some View {
-        if let reefKeeper = pendingReefKeeperVM.reefKeeper {
-            let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
-            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
+        if let reefKeeper, let institution {
+//            let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
+//            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
             
             TabView {
                 Group {
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         NavigationStack {
-                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
                                 .sheet(isPresented: $editing, content: {
-                                    ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
+                                    ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
                                         .onDisappear {
                                             Task {
                                                 await loadReefKeeper()
@@ -39,16 +45,21 @@ struct MainTabView: View {
                         }
                     } else {
                         NavigationSplitView(sidebar: {
-                            ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
+                            ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
                         }, detail: {
-                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
+                                .refreshable {
+                                    Task {
+                                        await loadReefKeeper()
+                                    }
+                                }
                         })
                     }
                 }
                 .tabItem {
                     Label("Reef", systemImage: "fish")
                 }
-                StoreView(reefKeeperVM: ownedReefKeeperVM)
+                StoreView(reefKeeperVM: $pendingReefKeeperVM)
                     .tabItem {
                         Label("Store", systemImage: "storefront")
                     }
@@ -67,9 +78,19 @@ struct MainTabView: View {
             } else {
                 ProgressView()
                     .task {
-                        await loadReefKeeper()
+                        await load()
                     }
             }
+        }
+    }
+    
+    func load() async {
+        do {
+            try await pendingReefKeeperVM.fetchReefKeeper()
+            try await pendingReefKeeperVM.fetchInstitution()
+            triedLoadingKeeper = true
+        } catch {
+            print(error)
         }
     }
     

@@ -14,11 +14,14 @@ struct StoreView: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    let reefKeeperVM: OwnedReefKeeperViewModel
+    
+    @Binding var reefKeeperVM: PendingReefKeeperViewModel
     
     var body: some View {
         NavigationStack {
             List {
+                Text("Available Points: \(reefKeeperVM.reefKeeper?.available_points ?? 0)")
+                    .font(.title)
                 skinsView
                 hatsView
                 toolsView
@@ -42,7 +45,8 @@ struct StoreView: View {
                         await buySkin(skin: skin)
                     }
                 }) {
-                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned")")
+//                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned")")
+                    StoreComponent(image: "Preview"+skin.rawValue, name: skin.rawValue, price: skin.price)
                 }
                 .disabled(isOwned)
             }
@@ -59,7 +63,8 @@ struct StoreView: View {
                         await buyHat(hat: hat)
                     }
                 }) {
-                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned")")
+//                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned")")
+                    StoreComponent(image: "Preview"+hat.rawValue, name: hat.rawValue, price: hat.price)
                 }
                 .disabled(isOwned)
             }
@@ -76,7 +81,8 @@ struct StoreView: View {
                         await buyTool(tool: tool)
                     }
                 }) {
-                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned")")
+//                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned")")
+                    StoreComponent(image: "Preview"+tool.rawValue, name: tool.rawValue, price: tool.price)
                 }
                 .disabled(isOwned)
             }

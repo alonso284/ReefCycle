@@ -14,7 +14,7 @@ struct ReefyStyler: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    var reefKeeperVM : OwnedReefKeeperViewModel
+    @Binding var reefKeeperVM: PendingReefKeeperViewModel
     
     var body: some View {
         List {
@@ -30,7 +30,7 @@ struct ReefyStyler: View {
                 ownedSkin in
               
                 if let skin = ownedSkin.skin {
-                    let isSelected = reefKeeperVM.reefKeeper.skin == skin
+                    let isSelected = reefKeeperVM.reefKeeper?.skin == skin
                     Button(action: {
                         Task {
                             do {
@@ -61,7 +61,7 @@ struct ReefyStyler: View {
             ForEach(hats){
                 ownedHat in
                 if let hat = ownedHat.hat {
-                    let isSelected = reefKeeperVM.reefKeeper.hat == hat
+                    let isSelected = reefKeeperVM.reefKeeper?.hat == hat
                     Button(action: {
                         Task {
                             do {
@@ -93,7 +93,7 @@ struct ReefyStyler: View {
                 ownedTool in
                 
                 if let tool = ownedTool.tool {
-                    let isSelected = reefKeeperVM.reefKeeper.tool == tool
+                    let isSelected = reefKeeperVM.reefKeeper?.tool == tool
                     Button(action: {
                         Task {
                             do {

@@ -17,32 +17,43 @@ struct PlasticClassifierView: View {
     @State private var isShowingCamera = false
     
     var body: some View {
-        VStack {
-            if let image = selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 300)
-            } else {
-                Image(systemName: "camera")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 300)
-                    .foregroundColor(.gray)
-            }
-            
-            Text(classificationResult)
+        ZStack {
+            Color.clear
+                       .overlay (
+                           Image("ReefBackground")
+                               .resizable()
+                               .aspectRatio(contentMode: .fill)
+//                               .border(.blue, width: 2)
+                       )
+                       .clipped()
+                       .ignoresSafeArea()
+            VStack {
+                if let image = selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 300)
+                } else {
+                    Image(systemName: "camera")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 300)
+                        .foregroundColor(.gray)
+                }
+                
+                Text(classificationResult)
+                    .padding()
+                
+                Button("Take Photo") {
+                    isShowingCamera = true
+                }
                 .padding()
-            
-            Button("Take Photo") {
-                isShowingCamera = true
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
             }
             .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
         }
-        .padding()
         .sheet(isPresented: $isShowingCamera) {
             CameraView(image: $selectedImage, onImageCaptured: classifyImage)
         }

@@ -6,76 +6,72 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct KeeperReefView: View {
-    let reefKeeperVM: ReefKeeperViewModel
+    let reefKeeper: ReefKeeper
+    let user: User?
+    let institution: Institution
     
     var body: some View {
-            ScrollView {
-                if UIDevice.current.userInterfaceIdiom == .pad {
+        ZStack {
+            Color.clear
+                       .overlay (
+                           Image("ReefBackground")
+                               .resizable()
+                               .aspectRatio(contentMode: .fill)
+//                               .border(.blue, width: 2)
+                       )
+                       .clipped()
+                       .ignoresSafeArea()
+
+            VStack {
+                ZStack {
+                    background
                     HStack {
-                        reefKeeperView
-                        institutionView
+                        ReefKeeperPreview(reefKeeper: reefKeeper, user: user)
+                            .padding()
+                        Divider()
+                            .padding()
+                        InstitutionPreview(institution: institution)
+                            .padding()
                     }
-                } else {
-                    VStack {
-                        reefKeeperView
-                        institutionView
-                    }
+                    .padding()
                 }
-                
-                ReefyView(reefKeeperVM: reefKeeperVM)
-                    .navigationTitle("Reef")
+                .fixedSize()
+                Spacer()
+                ReefyView(reefKeeper: reefKeeper)
+                Spacer()
             }
-            .refreshable {
-                do {
-                    try await reefKeeperVM.load()
-                } catch {
-                    print(error)
-                }
-            }
+            
+            .navigationTitle("Reef")
+        }
     }
     
     var background: some View {
-        RoundedRectangle(cornerRadius: 20).foregroundStyle(.gray)
+        RoundedRectangle(cornerRadius: 20).foregroundStyle(.gray.opacity(0.6))
     }
     
-    var institutionView : some View {
-        ZStack {
-            background
-            Group {
-                if let institution = reefKeeperVM.institution {
-                    let institutionVM = InstitutionViewModel(institution: institution)
-                    InstitutionPreview(institutionVM: institutionVM)
-                } else {
-                    Spacer()
-                        .onAppear {
-                            Task {
-                                await loadInstitution()
-                                
-                            }
-                        }
-                }
-            }
-        }
-    }
-    
-    var reefKeeperView: some View {
-        ZStack {
-            background
-            ReefKeeperPreview(reefKeeperVM: reefKeeperVM)
-        }
-    }
-    
-    func loadInstitution() async {
-        do {
-            try await reefKeeperVM.fetchInstitution()
-        } catch {
-            print(error)
-        }
-    }
+//    func loadInstitution() async {
+//        do {
+//            try await reefKeeperVM.fetchInstitution()
+//        } catch {
+//            print(error)
+//        }
+//    }
 }
 
 //#Preview {
-//    ReefView()
+//    let record = CKRecord(recordType: RecordType.ReefKeeper.rawValue)
+//    record[.reefkeeper_hat] = "ITESM"
+//    record[.reefkeeper_username] = "ITESM"
+    
+//    record[.institution_logo] = "
+//    record[.institution_name] = "Tecnologico de Monterrey"
+//    record[.institution_location]
+//    if let institution = Institution(record: record) {
+//        return KeeperReefView(institution: institution)
+//    } else {
+//        return EmptyView()
+//    }
 //}

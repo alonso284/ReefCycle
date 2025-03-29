@@ -18,9 +18,9 @@ struct InstitutionsView: View {
             Section("Institutions"){
                 ForEach(institutions) {
                     institution in
-                    let institutionVM = InstitutionViewModel(institution: institution)
-                    NavigationLink(destination: { InstitutionView(institutionVM: institutionVM) }, label: {
-                        InstitutionPreview(institutionVM: institutionVM)
+//                    let institutionVM = InstitutionViewModel(institution: institution)
+                    NavigationLink(destination: { InstitutionView(institution: institution) }, label: {
+                        InstitutionPreview(institution: institution)
                     })
                 }
             }

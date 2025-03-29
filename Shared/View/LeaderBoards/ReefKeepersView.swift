@@ -18,9 +18,9 @@ struct ReefKeepersView: View {
             Section("reefKeepers"){
                 ForEach(reefKeepers) {
                     reefKeeper in
-                    let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
-                    NavigationLink(destination: { ReefyView(reefKeeperVM: reefKeeperVM) }, label: {
-                        ReefKeeperPreview(reefKeeperVM: reefKeeperVM, verbose: false)
+                    let user = reefVM.user(id: reefKeeper.user.recordID)
+                    NavigationLink(destination: { ReefyView(reefKeeper: reefKeeper) }, label: {
+                        ReefKeeperPreview(reefKeeper: reefKeeper, user: user, verbose: false)
                     })
                 }
             }
@@ -35,6 +35,7 @@ struct ReefKeepersView: View {
 func loadReefKeepers() async {
     do {
         try await reefVM.fetchReefKeepers()
+        try await reefVM.fetchUsers()
     } catch {
         print(error)
     }

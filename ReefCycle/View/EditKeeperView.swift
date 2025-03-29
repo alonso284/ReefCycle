@@ -50,6 +50,7 @@ struct EditKeeperView: View {
             .refreshable {
                 do {
                     try await pendingReefKeeperVM.fetchReefKeeper()
+                    try await pendingReefKeeperVM.fetchInstitution()
                 } catch {
                     print(error)
                 }

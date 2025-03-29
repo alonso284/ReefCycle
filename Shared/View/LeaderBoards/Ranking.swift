@@ -27,6 +27,7 @@ struct Ranking: View {
         do {
             try await reefVM.fetchInstitutions()
             try await reefVM.fetchReefKeepers()
+            try await reefVM.fetchUsers()
         } catch {
             print(error)
         }

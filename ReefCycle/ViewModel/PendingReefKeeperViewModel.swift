@@ -12,6 +12,7 @@ import CloudKit
 class PendingReefKeeperViewModel {
     private(set) var user: User
     private(set) var reefKeeper: ReefKeeper?
+    private(set) var institution: Institution?
     
     init (user: User) {
         self.user = user
@@ -34,6 +35,22 @@ class PendingReefKeeperViewModel {
         self.reefKeeper = reefKeeper
     }
     
+    func fetchInstitution() async throws {
+//        let reference = CKRecord.Reference(recordID: user.id, action: .deleteSelf)
+//        let records = try await Config.publicDatabase.fetchCustomRecords(ofType: ReefKeeper.recordType, matching: NSPredicate(format: "user.recordName == %@", user.id), inZone: nil)
+        guard let reefKeeper else { return }
+        let records = try await Config.publicDatabase.fetchAllRecords(ofType: Institution.recordType, inZone: nil)
+        print(records)
+        let institutions = records.compactMap { Institution(record: $0) }
+        
+        guard let institution = institutions.first(where: { $0.id == reefKeeper.institution.recordID })  else {
+            print("Cloudnt load reefkeeper")
+            return
+        }
+        print(institution.name)
+        self.institution = institution
+    }
+    
     func createReefKeeper(institution: Institution, id: String) async throws {
         let institutionReference = CKRecord.Reference(recordID: institution.id, action: .deleteSelf)
         let userReference = CKRecord.Reference(recordID: user.id, action: .deleteSelf)
@@ -52,5 +69,88 @@ class PendingReefKeeperViewModel {
 //        print(record.recordID.recordName!)
     }
     
+    func getInstitution() async throws -> Institution? {
+        guard let reefKeeper else { return nil }
+        let record = try await Config.publicDatabase.record(for: reefKeeper.institution.recordID)
+        guard let institution = Institution(record: record) else {
+            print("Cloudnt load Institution")
+            return nil
+        }
+        print(institution.code)
+        return institution
+    }
+    
+    func getUser() async throws -> User? {
+        guard let reefKeeper else { return nil }
+        let record = try await Config.publicDatabase.record(for: reefKeeper.user.recordID)
+        guard let user = User(record: record) else {
+            print("Cloudnt load user")
+            return nil
+        }
+        print(user.username)
+        return user
+    }
+    
+    func enoughPoints(points: Int) -> Bool? {
+        guard let reefKeeper else { return nil }
+        return reefKeeper.used + points <= reefKeeper.points
+    }
+    
+    func usePoints(points: Int) async throws {
+//        print(reefKeeper.user)
+//        self.reefKeeper = reefKeeper
+        guard let reefKeeper else { return }
+        guard enoughPoints(points: points) == true else { throw CKError(.invalidArguments) }
+        
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_used] = points + reefKeeper.used
+        
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+//        return ReefKeeper(record: savedReefKeeperRecord)
+    }
+    
+    func selectSkin(skin: Skin) async throws {
+        guard let reefKeeper else { return }
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_skin] = skin.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+
+    
+    func selectHat(hat: Hat) async throws {
+        guard let reefKeeper else { return }
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_hat] = hat.rawValue
+        
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        print("updating hat")
+        self.reefKeeper = newReefKeeper
+    }
+    
+    func selectTool(tool: Tool) async throws {
+        guard let reefKeeper else { return }
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_tool] = tool.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+    
+    func load() async throws {
+        guard let reefKeeper else { return }
+        let newReefKeeperRecord = reefKeeper.record
+//        newReefKeeperRecord[.reefkeeper_tool] = tool.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
     
 }

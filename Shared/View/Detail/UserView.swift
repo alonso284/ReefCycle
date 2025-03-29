@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct UserView: View {
-    let userVM: UserViewModel
+    let user: User
     
     var body: some View {
-        Text(userVM.user.username)
+        Text(user.username)
     }
 }
 

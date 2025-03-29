@@ -6,14 +6,25 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct InstitutionView: View {
-    let institutionVM: InstitutionViewModel
+    let institution: Institution
     var body: some View {
-        Text(institutionVM.institution.code)
+        Text(institution.code)
     }
 }
 
-//#Preview {
-//    InstitutionView()
-//}
+#Preview {
+    let record = CKRecord(recordType: RecordType.Institution.rawValue)
+    record[.institution_code] = "ITESM"
+    
+//    record[.institution_logo] = "
+    record[.institution_name] = "Tecnologico de Monterrey"
+//    record[.institution_location]
+    if let institution = Institution(record: record) {
+        return InstitutionView(institution: institution)
+    } else {
+        return EmptyView()
+    }
+}

@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct ReefyView: View {
-    let reefKeeperVM: ReefKeeperViewModel
+    let reefKeeper: ReefKeeper
     
     private var skin: Skin? {
-        reefKeeperVM.reefKeeper.skin
+        reefKeeper.skin
     }
     private var hat: Hat? {
-        reefKeeperVM.reefKeeper.hat
+        reefKeeper.hat
     }
     private var tool: Tool? {
-        reefKeeperVM.reefKeeper.tool
+        reefKeeper.tool
     }
     
     var body: some View {

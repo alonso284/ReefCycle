@@ -8,18 +8,20 @@
 import SwiftUI
 
 struct InstitutionPreview: View {
-    let institutionVM: InstitutionViewModel
+    let institution: Institution
     
     var body: some View {
         HStack {
-            AsyncImage(url: institutionVM.institution.logo.fileURL){ image in
+            AsyncImage(url: institution.logo.fileURL){ image in
                 image.resizable()
                     .scaledToFit()
-                    .frame(width: 50, height: 50)
+                    .frame(width: 80, height: 80)
             } placeholder: {
                 ProgressView()
             }
-            Text(institutionVM.institution.code)
+            .padding(.trailing, 20)
+            Text(institution.code)
+                .font(.title2)
         }
     }
 }
