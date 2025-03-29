@@ -25,8 +25,8 @@ struct MainTabView: View {
 //            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
             
             TabView {
-                Group {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+//                Group {
+//                    if UIDevice.current.userInterfaceIdiom == .phone {
                         NavigationStack {
                             KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
                                 .sheet(isPresented: $editing, content: {
@@ -43,19 +43,19 @@ struct MainTabView: View {
                                     })
                                 }
                         }
-                    } else {
-                        NavigationSplitView(sidebar: {
-                            ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
-                        }, detail: {
-                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
-                                .refreshable {
-                                    Task {
-                                        await loadReefKeeper()
-                                    }
-                                }
-                        })
-                    }
-                }
+//                    } else {
+//                        NavigationSplitView(sidebar: {
+//                            ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
+//                        }, detail: {
+//                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
+//                                .refreshable {
+//                                    Task {
+//                                        await loadReefKeeper()
+//                                    }
+//                                }
+//                        })
+//                    }
+//                }
                 .tabItem {
                     Label("Reef", systemImage: "fish")
                 }
