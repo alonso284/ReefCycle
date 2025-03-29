@@ -38,6 +38,7 @@
 		1343370A2D8F90C000E03BE3 /* Exceptions for "Model" folder in "ReefCycle" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				CustomReefy.swift,
 				Institution.swift,
 				ReefKeeper.swift,
 				ReefMaster.swift,
@@ -48,6 +49,7 @@
 		134339742D906C5600E03BE3 /* Exceptions for "Model" folder in "ReefMaster" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				CustomReefy.swift,
 				Institution.swift,
 				ReefKeeper.swift,
 				ReefMaster.swift,
@@ -79,6 +81,7 @@
 				EditUserView.swift,
 				InstitutionsView.swift,
 				InstitutionView.swift,
+				ReefyView.swift,
 				UserView.swift,
 			);
 			target = 134336D32D8F8E7900E03BE3 /* ReefCycle */;
@@ -89,6 +92,7 @@
 				EditUserView.swift,
 				InstitutionsView.swift,
 				InstitutionView.swift,
+				ReefyView.swift,
 				UserView.swift,
 			);
 			target = 134336ED2D8F8ECE00E03BE3 /* ReefMaster */;
