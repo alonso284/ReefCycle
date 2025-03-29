@@ -10,7 +10,7 @@ import SwiftUI
 struct ReefKeepersView: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
     var reefKeepers: [ReefKeeper]? {
-        reefVM.reefKeepers
+        reefVM.reefKeepers?.sorted(by: { $0.points > $1.points })
     }
     
     var body: some View {
@@ -20,7 +20,7 @@ struct ReefKeepersView: View {
                     reefKeeper in
                     let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
                     NavigationLink(destination: { ReefyView(reefKeeperVM: reefKeeperVM) }, label: {
-                        ReefKeeperPreview(reefKeeperVM: reefKeeperVM)
+                        ReefKeeperPreview(reefKeeperVM: reefKeeperVM, verbose: false)
                     })
                 }
             }

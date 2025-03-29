@@ -70,12 +70,22 @@ class OwnedReefKeeperViewModel {
         
         let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
         guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        print("updating hat")
         self.reefKeeper = newReefKeeper
     }
     
     func selectTool(tool: Tool) async throws {
         let newReefKeeperRecord = reefKeeper.record
         newReefKeeperRecord[.reefkeeper_tool] = tool.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+    
+    func load() async throws {
+        let newReefKeeperRecord = reefKeeper.record
+//        newReefKeeperRecord[.reefkeeper_tool] = tool.rawValue
 
         let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
         guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }

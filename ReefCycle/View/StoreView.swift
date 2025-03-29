@@ -19,12 +19,15 @@ struct StoreView: View {
     var body: some View {
         NavigationStack {
             List {
-
                 skinsView
                 hatsView
                 toolsView
             }
-            
+            .toolbar {
+                NavigationLink("Edit", destination: {
+                    EditUserView()
+                })
+            }
             .navigationTitle("Store")
         }
     }
@@ -33,23 +36,15 @@ struct StoreView: View {
         Section("Skins") {
             ForEach(Skin.allCases, id: \.self) { skin in
                 let isOwned = skins.contains { $0.skin == skin }
-                let isSelected = reefKeeperVM.reefKeeper.skin == skin
 
                 Button(action: {
                     Task {
-                        if isOwned {
-                            do {
-                                try await reefKeeperVM.selectSkin(skin: skin)
-                            } catch {
-                                print("Failed to select skin: \(error)")
-                            }
-                        } else {
-                            await buySkin(skin: skin)
-                        }
+                        await buySkin(skin: skin)
                     }
                 }) {
-                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned")")
                 }
+                .disabled(isOwned)
             }
         }
     }
@@ -58,23 +53,15 @@ struct StoreView: View {
         Section("Hats") {
             ForEach(Hat.allCases, id: \.self) { hat in
                 let isOwned = hats.contains { $0.hat == hat }
-                let isSelected = reefKeeperVM.reefKeeper.hat == hat
 
                 Button(action: {
                     Task {
-                        if isOwned {
-                            do {
-                                try await reefKeeperVM.selectHat(hat: hat)
-                            } catch {
-                                print("Failed to select hat: \(error)")
-                            }
-                        } else {
-                            await buyHat(hat: hat)
-                        }
+                        await buyHat(hat: hat)
                     }
                 }) {
-                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned")")
                 }
+                .disabled(isOwned)
             }
         }
     }
@@ -83,23 +70,15 @@ struct StoreView: View {
         Section("Tools") {
             ForEach(Tool.allCases, id: \.self) { tool in
                 let isOwned = tools.contains { $0.tool == tool }
-                let isSelected = reefKeeperVM.reefKeeper.tool == tool
 
                 Button(action: {
                     Task {
-                        if isOwned {
-                            do {
-                                try await reefKeeperVM.selectTool(tool: tool)
-                            } catch {
-                                print("Failed to select tool: \(error)")
-                            }
-                        } else {
-                            await buyTool(tool: tool)
-                        }
+                        await buyTool(tool: tool)
                     }
                 }) {
-                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned") - \(isSelected)")
+                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned")")
                 }
+                .disabled(isOwned)
             }
         }
     }

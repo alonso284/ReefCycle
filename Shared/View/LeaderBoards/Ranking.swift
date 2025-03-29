@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LeaderBoardsView: View {
+struct Ranking: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
     
     var body: some View {
@@ -34,5 +34,5 @@ struct LeaderBoardsView: View {
 }
 
 #Preview {
-    LeaderBoardsView()
+    Ranking()
 }

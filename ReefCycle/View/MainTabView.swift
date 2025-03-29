@@ -11,25 +11,54 @@ struct MainTabView: View {
     let pendingReefKeeperVM: PendingReefKeeperViewModel
     @State var triedLoadingKeeper: Bool = false
     
+        @State var editing: Bool = false
+    
     var body: some View {
         if let reefKeeper = pendingReefKeeperVM.reefKeeper {
-            let reefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
+            let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
+            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
+            
             TabView {
-                KeeperReefView(reefKeeperVM: ReefKeeperViewModel(reefKeeper: reefKeeperVM.reefKeeper))
-                    .tabItem {
-                        Label("Reef", systemImage: "fish")
+                Group {
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        NavigationStack {
+                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                                .sheet(isPresented: $editing, content: {
+                                    ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
+                                        .onDisappear {
+                                            Task {
+                                                await loadReefKeeper()
+                                            }
+                                        }
+                                })
+                                .toolbar {
+                                    Button("Edit", action: {
+                                        editing = true
+                                    })
+                                }
+                        }
+                    } else {
+                        NavigationSplitView(sidebar: {
+                            ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
+                        }, detail: {
+                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                        })
                     }
-                StoreView(reefKeeperVM: reefKeeperVM)
+                }
+                .tabItem {
+                    Label("Reef", systemImage: "fish")
+                }
+                StoreView(reefKeeperVM: ownedReefKeeperVM)
                     .tabItem {
                         Label("Store", systemImage: "storefront")
                     }
-                KeeperProfileView(reefKeeperVM: reefKeeperVM)
+                Ranking()
                     .tabItem {
-                        Label("Profile", systemImage: "person")
+                        Label("Ranking", systemImage: "star")
                     }
-                LeaderBoardsView()
+                PlasticClassifierView()
                     .tabItem {
-                        Label("Leader Boards", systemImage: "star")
+                        Label("Classifier", systemImage: "camera")
                     }
             }
         } else {

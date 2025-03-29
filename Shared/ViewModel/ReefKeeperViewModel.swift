@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CloudKit
 
 @Observable
 class ReefKeeperViewModel {
@@ -34,6 +35,14 @@ class ReefKeeperViewModel {
             return
         }
         self.user = user
+    }
+    
+    func load() async throws {
+        let reefKeeperRecordCreated = try await Config.publicDatabase.save(reefKeeper.record)
+        if let reefKeeper = ReefKeeper(record: reefKeeperRecordCreated)
+        {
+            self.reefKeeper = reefKeeper
+        }
     }
     
 }

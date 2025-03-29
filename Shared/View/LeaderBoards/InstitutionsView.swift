@@ -10,7 +10,7 @@ import SwiftUI
 struct InstitutionsView: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
     var institutions: [Institution]? {
-        reefVM.institutions
+        reefVM.institutions?.sorted(by: { $0.name < $1.name })
     }
     
     var body: some View {
