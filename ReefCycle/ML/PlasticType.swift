@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PlasticType: Identifiable {
+struct PlasticType: Identifiable, Hashable {
     let id = UUID()
     let code: String
     let name: String
@@ -11,7 +11,7 @@ struct PlasticType: Identifiable {
     let process: String
     let disposal: String
     
-    enum RecyclabilityLevel: String {
+    enum RecyclabilityLevel: String, Hashable {
         case high = "Alta"
         case mediumHigh = "Media-Alta"
         case medium = "Media"
@@ -28,11 +28,20 @@ struct PlasticType: Identifiable {
             }
         }
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: PlasticType, rhs: PlasticType) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
-struct PlasticRecyclingGuideView: View {
-    @State private var selectedPlastic: PlasticType?
+struct PlasticRecyclingBentoView: View {
     @State private var searchText = ""
+    @State private var selectedPlastic: PlasticType? = nil
+    @State private var showingDetail = false
     
     let plasticTypes: [PlasticType] = [
         PlasticType(
@@ -196,124 +205,180 @@ struct PlasticRecyclingGuideView: View {
         }
     }
     
+    let columns = [
+        GridItem(.adaptive(minimum: 320, maximum: 400), spacing: 16)
+    ]
+    
     var body: some View {
-        NavigationSplitView {
-            List(filteredPlastics, selection: $selectedPlastic) { plastic in
-                HStack {
-                    ZStack {
-                        Circle()
-                            .fill(plastic.recyclabilityLevel.color)
-                            .frame(width: 40, height: 40)
-                        
-                        Text(plastic.code)
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    }
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text("Guía de Plásticos para Reciclaje")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
                     
-                    VStack(alignment: .leading) {
-                        Text(plastic.name)
-                            .font(.headline)
-                        Text(plastic.recyclability)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(filteredPlastics) { plastic in
+                            PlasticCard(plastic: plastic)
+                                .onTapGesture {
+                                    selectedPlastic = plastic
+                                    showingDetail = true
+                                }
+                        }
                     }
+                    .padding()
                 }
-                .padding(.vertical, 4)
             }
-            .navigationTitle("Guía de Plásticos para Reciclaje")
-            .searchable(text: $searchText, prompt: "Buscar por tipo, código o uso")
-        } detail: {
-            if let selectedPlastic = selectedPlastic {
-                PlasticDetailView(plastic: selectedPlastic)
-            } else {
-                ContentUnavailableView(
-                    "Selecciona un Tipo de Plástico",
-                    systemImage: "arrow.left",
-                    description: Text("Elige un tipo de plástico de la lista para ver sus detalles.")
-                )
+            .background(Color(.systemGray6))
+            .navigationBarTitle("", displayMode: .inline)
+            .sheet(isPresented: $showingDetail) {
+                if let selectedPlastic = selectedPlastic {
+                    PlasticDetailSheet(plastic: selectedPlastic, isPresented: $showingDetail)
+                }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
-struct PlasticDetailView: View {
+struct PlasticCard: View {
     let plastic: PlasticType
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                HStack {
-                    ZStack {
-                        Circle()
-                            .fill(plastic.recyclabilityLevel.color)
-                            .frame(width: 80, height: 80)
-                        
-                        Text(plastic.code)
-                            .font(.system(size: 36))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                    }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                ZStack {
+                    Circle()
+                        .fill(plastic.recyclabilityLevel.color)
+                        .frame(width: 50, height: 50)
                     
-                    VStack(alignment: .leading) {
-                        Text(plastic.name)
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                        
-                        HStack {
-                            Label("Reciclabilidad:", systemImage: "arrow.3.trianglepath")
-                                .fontWeight(.medium)
-                            Text(plastic.recyclability)
-                                .foregroundColor(plastic.recyclabilityLevel.color)
-                                .fontWeight(.bold)
-                        }
-                    }
-                    .padding(.leading)
-                    
-                    Spacer()
+                    Text(plastic.code)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
                 }
                 
-                VStack(alignment: .leading, spacing: 16) {
-                    SectionView(title: "Características Físicas", systemImage: "list.bullet") {
-                        ForEach(plastic.characteristics, id: \.self) { characteristic in
-                            Label(characteristic, systemImage: "circle.fill")
-                                .labelStyle(.titleAndIcon)
+                VStack(alignment: .leading) {
+                    Text(plastic.name)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .lineLimit(1)
+                    
+                    Text(plastic.recyclability)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+                .padding(.leading, 8)
+                
+                Spacer()
+            }
+            
+            Divider()
+            
+            Text("Ejemplos: \(plastic.examples.prefix(2).joined(separator: ", "))")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .lineLimit(2)
+            
+            Spacer()
+            
+            HStack {
+                Image(systemName: "arrow.right.circle.fill")
+                    .foregroundColor(plastic.recyclabilityLevel.color)
+                Text("Tocar para más información")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .frame(height: 180)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(UIColor.systemBackground))
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
+    }
+}
+
+struct PlasticDetailSheet: View {
+    let plastic: PlasticType
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    HStack {
+                        ZStack {
+                            Circle()
+                                .fill(plastic.recyclabilityLevel.color)
+                                .frame(width: 80, height: 80)
+                            
+                            Text(plastic.code)
+                                .font(.system(size: 36))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+                        
+                        VStack(alignment: .leading) {
+                            Text(plastic.name)
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            HStack {
+                                Label("Reciclabilidad:", systemImage: "arrow.3.trianglepath")
+                                    .fontWeight(.medium)
+                                Text(plastic.recyclability)
+                                    .foregroundColor(plastic.recyclabilityLevel.color)
+                                    .fontWeight(.bold)
+                            }
+                        }
+                        .padding(.leading)
+                        
+                        Spacer()
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 16) {
+                        DetailSectionView(title: "Características Físicas", systemImage: "list.bullet") {
+                            ForEach(plastic.characteristics, id: \.self) { characteristic in
+                                Label(characteristic, systemImage: "circle.fill")
+                                    .labelStyle(.titleAndIcon)
+                                    .font(.body)
+                            }
+                        }
+                        
+                        DetailSectionView(title: "Ejemplos Comunes", systemImage: "shippingbox") {
+                            ForEach(plastic.examples, id: \.self) { example in
+                                Label(example, systemImage: "circle.fill")
+                                    .labelStyle(.titleAndIcon)
+                                    .font(.body)
+                            }
+                        }
+                        
+                        DetailSectionView(title: "Proceso de Reciclaje", systemImage: "arrow.triangle.2.circlepath") {
+                            Text(plastic.process)
                                 .font(.body)
                         }
-                    }
-                    
-                    SectionView(title: "Ejemplos Comunes", systemImage: "shippingbox") {
-                        ForEach(plastic.examples, id: \.self) { example in
-                            Label(example, systemImage: "circle.fill")
-                                .labelStyle(.titleAndIcon)
+                        
+                        DetailSectionView(title: "Cómo Desechar", systemImage: "trash") {
+                            Text(plastic.disposal)
                                 .font(.body)
                         }
-                    }
-                    
-                    SectionView(title: "Proceso de Reciclaje", systemImage: "arrow.triangle.2.circlepath") {
-                        Text(plastic.process)
-                            .font(.body)
-                    }
-                    
-                    SectionView(title: "Cómo Desechar", systemImage: "trash") {
-                        Text(plastic.disposal)
-                            .font(.body)
                     }
                 }
+                .padding()
             }
-            .padding()
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Código \(plastic.code)")
-                    .font(.headline)
-            }
+            .navigationBarTitle("Plástico Tipo \(plastic.code)", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Cerrar") {
+                isPresented = false
+            })
         }
     }
 }
 
-struct SectionView<Content: View>: View {
+struct DetailSectionView<Content: View>: View {
     let title: String
     let systemImage: String
     let content: Content
@@ -327,29 +392,18 @@ struct SectionView<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Label(title, systemImage: systemImage)
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.bold)
             
             content
                 .padding(.leading)
         }
         .padding()
-        .background(Color.gray.opacity(0.1))
+        .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12)
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        PlasticRecyclingGuideView()
-    }
-}
-
-// Preview
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .previewInterfaceOrientation(.landscapeLeft)
-            .previewDevice("iPad Pro (11-inch)")
-    }
+#Preview {
+    PlasticRecyclingBentoView()
 }
