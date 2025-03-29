@@ -34,11 +34,24 @@ public struct PieChartView: View {
                 SectorMark(
                     angle: .value("Value", item.value),
                     innerRadius: .ratio(0.6),
-                    angularInset: 3
+                    angularInset: 30
                 )
-                .cornerRadius(6)
+                .cornerRadius(60)
                 .foregroundStyle(by: .value("University", item.name))
             }
+            // Use a custom color scheme with a range of colors
+            .chartForegroundStyleScale(range: [
+                Color.green.gradient,
+                Color.blue.gradient,
+                Color.purple.gradient,
+                Color.orange.gradient,
+                Color.red.gradient,
+                Color.teal.gradient,
+                Color.indigo.gradient,
+                Color.pink.gradient,
+                Color.cyan.gradient,
+                Color.yellow.gradient
+            ])
             .chartBackground { chartProxy in
                 GeometryReader { geometry in
                     let frame = geometry[chartProxy.plotFrame!]
