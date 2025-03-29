@@ -19,14 +19,16 @@ struct PlasticClassifierView: View {
     var body: some View {
         ZStack {
             Color.clear
-                       .overlay (
-                           Image("ReefBackgroundWide")
-                               .resizable()
-                               .aspectRatio(contentMode: .fill)
-//                               .border(.blue, width: 2)
-                       )
-                       .clipped()
-                       .ignoresSafeArea()
+
+             .overlay (
+                 Image("ReefBackground")
+                     .resizable()
+                     .aspectRatio(contentMode: .fill)
+  //                               .border(.blue, width: 2)
+             )
+             .clipped()
+             .ignoresSafeArea()
+
             VStack {
                 if let image = selectedImage {
                     Image(uiImage: image)
@@ -56,6 +58,11 @@ struct PlasticClassifierView: View {
         }
         .sheet(isPresented: $isShowingCamera) {
             CameraView(image: $selectedImage, onImageCaptured: classifyImage)
+        }
+        .toolbar{
+            ToolbarItem(placement: .topBarTrailing) {
+                ARContentView()
+            }
         }
     }
     
