@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 
 @Observable
-class ReefKeeperViewModel {
+class OwnedReefKeeperViewModel {
     private(set) var reefKeeper: ReefKeeper
     
     init(reefKeeper: ReefKeeper) {

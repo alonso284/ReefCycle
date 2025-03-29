@@ -11,12 +11,15 @@ struct LeaderBoardsView: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
     
     var body: some View {
-        List {
-            InstitutionsView()
-            ReefKeepersView()
-        }
-        .refreshable {
-            await loadLeaderBoards()
+        NavigationStack {
+            List {
+                InstitutionsView()
+                ReefKeepersView()
+            }
+            .refreshable {
+                await loadLeaderBoards()
+            }
+            .navigationTitle("Leader Boards")
         }
     }
     

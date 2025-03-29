@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct KeeperProfileView: View {
-    let reefKeeperVM: ReefKeeperViewModel
+    let reefKeeperVM: OwnedReefKeeperViewModel
     @State var institution: Institution?
     @State var user: User?
     

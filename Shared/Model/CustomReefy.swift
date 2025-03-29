@@ -12,9 +12,9 @@ import SwiftData
 class OwnedSkin {
     var skinRaw: String = ""
     
-    var skin: Skin {
-        get { Skin(rawValue: skinRaw) ?? .light }
-        set { skinRaw = newValue.rawValue }
+    var skin: Skin? {
+        get { Skin(rawValue: skinRaw) }
+        set { skinRaw = newValue?.rawValue ?? "" }
     }
 
     init(skin: Skin) {
@@ -26,9 +26,9 @@ class OwnedSkin {
 class OwnedTool {
     var toolRaw: String = ""
     
-    var tool: Tool {
-        get { Tool(rawValue: toolRaw) ?? .shovel }
-        set { toolRaw = newValue.rawValue }
+    var tool: Tool? {
+        get { Tool(rawValue: toolRaw) }
+        set { toolRaw = newValue?.rawValue ?? "" }
     }
 
     init(tool: Tool) {
@@ -40,9 +40,9 @@ class OwnedTool {
 class OwnedHat {
     var hatRaw: String = ""
     
-    var hat: Hat {
-        get { Hat(rawValue: hatRaw) ?? .cap }
-        set { hatRaw = newValue.rawValue }
+    var hat: Hat? {
+        get { Hat(rawValue: hatRaw) }
+        set { hatRaw = newValue?.rawValue ?? "" }
     }
 
     init(hat: Hat) {
@@ -51,43 +51,59 @@ class OwnedHat {
 }
 
 enum Skin: String, CaseIterable, Encodable {
-    case light
-    case dark
+    case ReefyGreen
+    case ReefyPurple
+    case ReefyRed
     
     var price: Int {
         switch self {
-        case .light:
-            return 100
-        case .dark:
-            return 200
+        case .ReefyGreen:
+            200
+        case .ReefyPurple:
+            300
+        case .ReefyRed:
+            400
         }
     }
 }
 
 enum Hat: String, CaseIterable, Encodable {
-    case cap
-    case bandana
+    case CookHat
+    case EggHat
+    case LeafeHat
+    case MariachiHat
+    case PartyHat
     
     var price: Int {
         switch self {
-        case .cap:
-            return 100
-        case .bandana:
-            return 200
+        case .CookHat:
+            100
+        case .EggHat:
+            200
+        case .LeafeHat:
+            300
+        case .MariachiHat:
+            400
+        case .PartyHat:
+            500
         }
     }
 }
 
 enum Tool: String, CaseIterable, Encodable {
-    case shovel
-    case hammer
+    case BottleTool
+    case FishTool
+    case ShovelTool
     
     var price: Int {
         switch self {
-        case .shovel:
-            return 100
-        case .hammer:
-            return 200
+        
+        case .BottleTool:
+            100
+        case .FishTool:
+            200
+        case .ShovelTool:
+            300
         }
     }
 }

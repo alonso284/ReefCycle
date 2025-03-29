@@ -12,6 +12,8 @@ struct EditUserView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State var username: String = ""
+    @State var emoji: String = ""
+    @State var color: Color = .accentColor
     
     var body: some View {
         Form {
@@ -24,6 +26,8 @@ struct EditUserView: View {
         }
         .onAppear {
             username = reefVM.user?.username ?? ""
+            emoji = reefVM.user?.emoji ?? ""
+            color = reefVM.user?.color ?? .accentColor
         }
     }
     
