@@ -14,81 +14,62 @@ struct StoreView: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    
     @Binding var reefKeeperVM: PendingReefKeeperViewModel
     
     var body: some View {
         NavigationStack {
-            List {
-                Text("Available Points: \(reefKeeperVM.reefKeeper?.available_points ?? 0)")
-                    .font(.title)
-                skinsView
-                hatsView
-                toolsView
-            }
-            .toolbar {
-                NavigationLink("Edit", destination: {
-                    EditUserView()
-                })
-            }
-            .navigationTitle("Store")
-        }
-    }
-    
-    var skinsView: some View {
-        Section("Skins") {
-            ForEach(Skin.allCases, id: \.self) { skin in
-                let isOwned = skins.contains { $0.skin == skin }
-
-                Button(action: {
-                    Task {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    SectionCarousel(title: "Ropa", items: Skin.allCases, isOwned: { skin in
+                        skins.contains { $0.skin == skin }
+                    }, action: { skin in
                         await buySkin(skin: skin)
-                    }
-                }) {
-//                    Text("\(skin.rawValue.capitalized) - \(skin.price) - \(isOwned ? "Owned" : "Not Owned")")
-                    StoreComponent(image: "Preview"+skin.rawValue, name: skin.rawValue, price: skin.price)
-                }
-                .disabled(isOwned)
-            }
-        }
-    }
-    
-    var hatsView: some View {
-        Section("Hats") {
-            ForEach(Hat.allCases, id: \.self) { hat in
-                let isOwned = hats.contains { $0.hat == hat }
+                    }, previewName: { skin in
+                        "Preview" + skin.rawValue
+                    }, itemName: { $0.rawValue }, price: { $0.price })
 
-                Button(action: {
-                    Task {
+                    SectionCarousel(title: "Gorros", items: Hat.allCases, isOwned: { hat in
+                        hats.contains { $0.hat == hat }
+                    }, action: { hat in
                         await buyHat(hat: hat)
-                    }
-                }) {
-//                    Text("\(hat.rawValue.capitalized) - \(hat.price) - \(isOwned ? "Owned" : "Not Owned")")
-                    StoreComponent(image: "Preview"+hat.rawValue, name: hat.rawValue, price: hat.price)
-                }
-                .disabled(isOwned)
-            }
-        }
-    }
+                    }, previewName: { hat in
+                        "Preview" + hat.rawValue
+                    }, itemName: { $0.rawValue }, price: { $0.price })
 
-    var toolsView: some View {
-        Section("Tools") {
-            ForEach(Tool.allCases, id: \.self) { tool in
-                let isOwned = tools.contains { $0.tool == tool }
-
-                Button(action: {
-                    Task {
+                    SectionCarousel(title: "Herramientas", items: Tool.allCases, isOwned: { tool in
+                        tools.contains { $0.tool == tool }
+                    }, action: { tool in
                         await buyTool(tool: tool)
-                    }
-                }) {
-//                    Text("\(tool.rawValue.capitalized) - \(tool.price) - \(isOwned ? "Owned" : "Not Owned")")
-                    StoreComponent(image: "Preview"+tool.rawValue, name: tool.rawValue, price: tool.price)
+                    }, previewName: { tool in
+                        "Preview" + tool.rawValue
+                    }, itemName: { $0.rawValue }, price: { $0.price })
                 }
-                .disabled(isOwned)
+                .padding(.vertical)
             }
+            .navigationTitle("Tienda")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "dollarsign.circle")
+                            .foregroundColor(.accentColor)
+                        Text("\(reefKeeperVM.reefKeeper?.available_points ?? 0)")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                    )
+                }
+            }
+
         }
     }
-    
+
     func buyHat(hat: Hat) async {
         do {
             try await reefKeeperVM.usePoints(points: hat.price)
@@ -116,7 +97,3 @@ struct StoreView: View {
         }
     }
 }
-
-//#Preview {
-//    StoreView()
-//}

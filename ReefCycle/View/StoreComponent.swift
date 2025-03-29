@@ -11,25 +11,26 @@ struct StoreComponent: View {
     var image: String
     var name: String
     var price: Int
+
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(name)
-                    .font(.title)
-                Text("$\(price)")
-                    .font(.title2)
-            }
-            Spacer()
+        VStack(spacing: 8) {
             Image(image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 120, height: 120)
-                .padding()
-                .padding()
-        }
-    }
-}
+                .frame(height: 100)
+                .clipped()
 
-#Preview {
-    StoreComponent(image: "PreviewCookHat", name: "Cook Hat", price: 200)
+            Text(name.capitalized)
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.primary)
+                .lineLimit(2)
+
+            Text("$\(price)")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .frame(width: 140, height: 180)
+        .padding(8)
+    }
 }

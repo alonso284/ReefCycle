@@ -26,7 +26,7 @@ struct MainTabView: View {
             
             TabView {
                 Group {
-                    if UIDevice.current.userInterfaceIdiom == .phone {
+//                    if UIDevice.current.userInterfaceIdiom == .phone {
                         NavigationStack {
                             KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
                                 .sheet(isPresented: $editing, content: {
@@ -38,23 +38,29 @@ struct MainTabView: View {
                                         }
                                 })
                                 .toolbar {
-                                    Button("Edit", action: {
-                                        editing = true
-                                    })
-                                }
-                        }
-                    } else {
-                        NavigationSplitView(sidebar: {
-                            ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
-                        }, detail: {
-                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
-                                .refreshable {
-                                    Task {
-                                        await loadReefKeeper()
+                                    ToolbarItem(placement: .navigationBarTrailing) {
+                                        Button(action: {
+                                            editing = true
+                                        }) {
+                                            Image(systemName: "backpack")
+                                                .foregroundColor(.white) // Customize your color here
+                                        }
                                     }
                                 }
-                        })
-                    }
+
+                        }
+//                    } else {
+//                        NavigationSplitView(sidebar: {
+//                            ReefyStyler(reefKeeperVM: $pendingReefKeeperVM)
+//                        }, detail: {
+//                            KeeperReefView(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
+//                                .refreshable {
+//                                    Task {
+//                                        await loadReefKeeper()
+//                                    }
+//                                }
+//                        })
+//                    }
                 }
                 .tabItem {
                     Label("Reef", systemImage: "fish")
@@ -67,6 +73,8 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Ranking", systemImage: "star")
                     }
+                
+                
                 PlasticClassifierView()
                     .tabItem {
                         Label("Classifier", systemImage: "camera")
