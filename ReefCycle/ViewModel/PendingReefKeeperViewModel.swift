@@ -27,7 +27,7 @@ class PendingReefKeeperViewModel {
         print(records)
         let reefKeepers = records.compactMap { ReefKeeper(record: $0) }
         
-        guard let reefKeeper = reefKeepers.first(where: { $0.user.recordID == user.id })  else {
+        guard let reefKeeper = reefKeepers.first(where: { $0.user?.recordID == user.id })  else {
             print("Cloudnt load reefkeeper")
             return
         }
@@ -82,7 +82,8 @@ class PendingReefKeeperViewModel {
     
     func getUser() async throws -> User? {
         guard let reefKeeper else { return nil }
-        let record = try await Config.publicDatabase.record(for: reefKeeper.user.recordID)
+        guard let userRef = reefKeeper.user else { return nil }
+        let record = try await Config.publicDatabase.record(for: userRef.recordID)
         guard let user = User(record: record) else {
             print("Cloudnt load user")
             return nil

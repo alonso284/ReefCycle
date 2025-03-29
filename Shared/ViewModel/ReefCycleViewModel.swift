@@ -28,8 +28,38 @@ class ReefCycleViewModel {
         users = record.compactMap { User(record: $0) }
     }
     
-    func user(id: CKRecord.ID) -> User? {
-        return users?.first(where: { $0.id == id })
+    
+    var stats:[UniversityStat]? {
+        guard let institutions, let reefKeepers else { return nil }
+
+        let statsDict = reefKeepers.reduce(into: [String: Int]()) { result, reefKeeper in
+            guard let institutionName = institutions.first(where: {
+                $0.id == reefKeeper.institution.recordID
+            })?.code else {
+                return
+            }
+
+            result[institutionName, default: 0] += reefKeeper.points
+        }
+
+        let stats = statsDict.map { UniversityStat(name: $0.key, value: $0.value) }
+        return stats
+    }
+    
+    func user(from reference: CKRecord.Reference) async throws -> User? {
+        let userRecordID = reference.recordID
+
+        do {
+            let record = try await Config.publicDatabase.record(for: userRecordID)
+            print(record)
+            let user = User(record: record)
+            print(user)
+            print("YUP")
+            return user
+        } catch {
+            print("Failed to fetch user record: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     func fetchReefKeepers() async throws {

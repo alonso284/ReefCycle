@@ -42,9 +42,9 @@ struct KeeperReefView: View {
                 .fixedSize()
                 Spacer()
                 ReefyView(reefKeeper: reefKeeper)
+                    .offset(y: -30)
                 Spacer()
             }
-            
         }
     }
     

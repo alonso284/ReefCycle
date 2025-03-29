@@ -13,8 +13,19 @@ struct Ranking: View {
     var body: some View {
         NavigationStack {
             List {
+                if let stats = reefVM.stats {
+                    PieChartView(data: stats)
+                } else {
+                    ProgressView()
+                        .onAppear {
+                            Task {
+                                await loadLeaderBoards()
+                            }
+                        }
+                }
                 InstitutionsView()
-                ReefKeepersView()
+//                ReefKeepersView()
+//                Text(String(reefVM.users?.count ?? -1))
             }
             .refreshable {
                 await loadLeaderBoards()

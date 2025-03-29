@@ -78,7 +78,7 @@ extension User {
         
 //        let tags = tags_rawValues?.compactMap { Activity.Tag(rawValue: $0) } ?? []
 //        guard let color = colorHex.toColor() else { return nil }
-        
+        print("GOT ALL VALUES")
         self.init(record: record, username: username, emoji: emoji, color: color, reefKeeper: reefKeeper)
     }
 }
