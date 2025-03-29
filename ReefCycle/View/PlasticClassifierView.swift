@@ -20,7 +20,7 @@ struct PlasticClassifierView: View {
         ZStack {
             Color.clear
                        .overlay (
-                           Image("ReefBackground")
+                           Image("ReefBackgroundWide")
                                .resizable()
                                .aspectRatio(contentMode: .fill)
 //                               .border(.blue, width: 2)
