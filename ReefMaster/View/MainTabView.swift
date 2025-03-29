@@ -15,26 +15,10 @@ struct MainTabView: View {
     
     var body: some View {
         if let reefMaster = pendingReefMasterVM.reefMaster {
-            let reefMasterVM = ReefMasterViewModel(reefKeeper: reefMaster)
-            TabView {
-                ReefKeepersViewModel(reefMasterVM: reefMasterVM)
-                    .tabItem {
-                        Label("ReefKeepers", systemImage: "person.2")
-                    }
-//                StoreView(reefKeeperVM: reefKeeperVM)
-//                    .tabItem {
-//                        Label("Store", systemImage: "storefront")
-//                    }
-//                KeeperProfileView(reefKeeperVM: reefKeeperVM)
-//                    .tabItem {
-//                        Label("Profile", systemImage: "person")
-//                    }
-                InstitutionsView()
-                    .tabItem {
-                        Label("Institutions", systemImage: "house.lodge")
-                    }
-                QRCodeScannerExampleView(viewModel: ReefMasterViewModel(reefKeeper: reefMaster)).tabItem{Label( "Barcode Scanner", systemImage: "barcode")}
-            }
+        
+            
+                QRCodeScannerExampleView(viewModel: ReefMasterViewModel(reefKeeper: reefMaster))
+         
         } else {
             if triedLoadingMaster {
                 EditMasterView(pendingReefKeeperVM: pendingReefMasterVM)
