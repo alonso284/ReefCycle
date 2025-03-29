@@ -15,15 +15,16 @@ struct InstitutionsView: View {
     
     var body: some View {
         if let institutions {
-            List(institutions){
-                institution in
-                VStack {
-                    Text(institution.name)
-                    if let location = institution.location {
-                        Text("\(location.altitude)")
+            Section("Institutions"){
+                ForEach(institutions) {
+                    institution in
+                    VStack {
+                        Text(institution.name)
+                        if let location = institution.location {
+                            Text("\(location.altitude)")
+                        }
                     }
                 }
-                
             }
         } else {
             ProgressView()
@@ -33,13 +34,13 @@ struct InstitutionsView: View {
         }
     }
 
-func loadInstitutions() async {
-    do {
-        try await reefVM.fetchInstitutions()
-    } catch {
-        print(error)
+    func loadInstitutions() async {
+        do {
+            try await reefVM.fetchInstitutions()
+        } catch {
+            print(error)
+        }
     }
-}
 }
 
 //#Preview {

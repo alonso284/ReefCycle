@@ -47,6 +47,13 @@ struct EditKeeperView: View {
                     })
                 }
             }
+            .refreshable {
+                do {
+                    try await pendingReefKeeperVM.fetchReefKeeper()
+                } catch {
+                    print(error)
+                }
+            }
         } else {
             ProgressView()
                 .task {

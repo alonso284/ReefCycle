@@ -27,9 +27,9 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
-                InstitutionsView()
+                LeaderBoardsView()
                     .tabItem {
-                        Label("Institutions", systemImage: "house.lodge")
+                        Label("Leader Boards", systemImage: "star")
                     }
             }
         } else {

@@ -13,7 +13,7 @@ struct KeeperReefView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                ReefyView(reefKeeper: reefKeeperVM.reefKeeper)
             }
             .navigationTitle("Reef")
         }

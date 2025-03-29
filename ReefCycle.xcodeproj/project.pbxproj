@@ -79,8 +79,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				EditUserView.swift,
-				InstitutionsView.swift,
 				InstitutionView.swift,
+				LeaderBoards/InstitutionsView.swift,
+				LeaderBoards/LeaderBoardsView.swift,
+				LeaderBoards/ReefKeepersView.swift,
 				ReefyView.swift,
 				UserView.swift,
 			);
@@ -90,8 +92,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				EditUserView.swift,
-				InstitutionsView.swift,
 				InstitutionView.swift,
+				LeaderBoards/InstitutionsView.swift,
+				LeaderBoards/LeaderBoardsView.swift,
+				LeaderBoards/ReefKeepersView.swift,
 				ReefyView.swift,
 				UserView.swift,
 			);

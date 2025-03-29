@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CloudKit
 
 @Observable
 class ReefKeeperViewModel {
@@ -34,4 +35,51 @@ class ReefKeeperViewModel {
         print(user.username)
         return user
     }
+    
+    func enoughPoints(points: Int) -> Bool {
+        return reefKeeper.used + points <= reefKeeper.points
+    }
+    
+    func usePoints(points: Int) async throws {
+//        print(reefKeeper.user)
+//        self.reefKeeper = reefKeeper
+        guard enoughPoints(points: points) else { throw CKError(.invalidArguments) }
+        
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_used] = points + reefKeeper.used
+        
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+//        return ReefKeeper(record: savedReefKeeperRecord)
+    }
+    
+    func selectSkin(skin: Skin) async throws {
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_skin] = skin.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+
+    
+    func selectHat(hat: Hat) async throws {
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_hat] = hat.rawValue
+        
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+    
+    func selectTool(tool: Tool) async throws {
+        let newReefKeeperRecord = reefKeeper.record
+        newReefKeeperRecord[.reefkeeper_tool] = tool.rawValue
+
+        let savedReefKeeperRecord = try await Config.publicDatabase.save(newReefKeeperRecord)
+        guard let newReefKeeper = ReefKeeper(record: savedReefKeeperRecord) else { return }
+        self.reefKeeper = newReefKeeper
+    }
+    
 }

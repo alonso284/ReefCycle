@@ -8,24 +8,27 @@
 import SwiftUI
 
 struct ReefyView: View {
-    let skin: Skin?
-    let hat: Hat?
-    let tool: Tool?
+    let reefKeeper: ReefKeeper
     
-    var resolvedSkin: Skin {  skin ?? .light }
+    var skin: Skin {
+        reefKeeper.skin ?? .light
+    }
+    var hat: Hat? {
+        reefKeeper.hat
+    }
+    var tool: Tool? {
+        reefKeeper.tool
+    }
     
     var body: some View {
         VStack {
-            Text(resolvedSkin.rawValue)
+            Text(skin.rawValue)
             Text(hat?.rawValue ?? "No Hat")
             Text(tool?.rawValue ?? "No Tool")
         }
-        
-            
-        
     }
 }
 
-#Preview {
-    ReefyView(skin: .dark, hat: .bandana, tool: .shovel)
-}
+//#Preview {
+//    ReefyView(skin: .dark, hat: .bandana, tool: .shovel)
+//}

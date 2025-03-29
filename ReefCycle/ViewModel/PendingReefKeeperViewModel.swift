@@ -43,6 +43,7 @@ class PendingReefKeeperViewModel {
         reefKeeperRecord[.reefkeeper_user] = userReference
         reefKeeperRecord[.reefkeeper_institution] = institutionReference
         reefKeeperRecord[.reefkeeper_points] = 0
+        reefKeeperRecord[.reefkeeper_used] = 0
         
 //        let reefKeeper = try await ReefKeeper(record: reefKeeperRecord)
         let reefKeeperRecordCreated = try await Config.publicDatabase.save(reefKeeperRecord)
