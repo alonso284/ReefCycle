@@ -84,6 +84,7 @@
 		13433B622D90959400E03BE3 /* Exceptions for "View" folder in "ReefCycle" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Detail/InstitutionMapView.swift,
 				Detail/InstitutionView.swift,
 				Detail/KeeperReefView.swift,
 				Detail/UserView.swift,

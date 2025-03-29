@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct ReefKeepersView: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
@@ -13,16 +14,20 @@ struct ReefKeepersView: View {
         reefVM.reefKeepers?.sorted(by: { $0.points > $1.points })
     }
     
+    
     var body: some View {
         if let reefKeepers {
             Section("reefKeepers"){
+                
                 ForEach(reefKeepers) {
                     reefKeeper in
-                    let user = reefVM.user(id: reefKeeper.user.recordID)
+                    
+
                     NavigationLink(destination: { ReefyView(reefKeeper: reefKeeper) }, label: {
-                        ReefKeeperPreview(reefKeeper: reefKeeper, user: user, verbose: false)
+                        ReefKeeperPreview(reefKeeper: reefKeeper, user: nil, verbose: false, showReefy: true)
                     })
                 }
+                
             }
         } else {
             ProgressView()
@@ -35,7 +40,6 @@ struct ReefKeepersView: View {
 func loadReefKeepers() async {
     do {
         try await reefVM.fetchReefKeepers()
-        try await reefVM.fetchUsers()
     } catch {
         print(error)
     }

@@ -18,8 +18,13 @@ extension Date {
 
 struct ReefKeeperPreview: View {
     let reefKeeper: ReefKeeper
-    let user: User?
+    @State var user: User?
     var verbose: Bool = true
+    var showReefy: Bool = false
+    @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
+    
+    
+
     
     var body: some View {
 //        if let user = reefKeeper.user {
@@ -42,6 +47,23 @@ struct ReefKeeperPreview: View {
                             .font(.subheadline)
                         Text("Points: \(reefKeeper.points) pts")
                             .font(.subheadline)
+                    }
+                }
+                Spacer()
+                if showReefy {
+                    ReefyView(reefKeeper: reefKeeper, size: 100)
+                        .offset(y: -15)
+                }
+            }
+            .onAppear {
+                Task {
+                    do {
+                        guard let userRef = reefKeeper.user else { return }
+                        user = try await reefVM.user(from: userRef)
+                        print(user)
+//                        print("Found user \(reefKeeper.user.recordID)")
+                    } catch {
+                        print("Couldnt find user \(error)")
                     }
                 }
             }
