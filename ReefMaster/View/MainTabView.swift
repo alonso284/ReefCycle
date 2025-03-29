@@ -33,6 +33,7 @@ struct MainTabView: View {
                     .tabItem {
                         Label("Institutions", systemImage: "house.lodge")
                     }
+                QRCodeScannerExampleView().tabItem{Label( "Barcode Scanner", systemImage: "qr")}
             }
         } else {
             if triedLoadingMaster {
