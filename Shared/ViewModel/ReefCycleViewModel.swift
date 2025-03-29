@@ -10,8 +10,7 @@ import CloudKit
 import UIKit
 
 
-@Observable
-class ReefCycleViewModel {
+@Observable class ReefCycleViewModel {
     
     private(set) var user: User?
     private(set) var institutions: [Institution]?

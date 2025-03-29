@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct ReefCycleApp: App {
-    let reefVM      = ReefCycleViewModel()
+    @State private var reefVM = ReefCycleViewModel()
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             OwnedHat.self,

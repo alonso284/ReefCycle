@@ -14,7 +14,10 @@ struct ReefyStyler: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    var reefKeeperVM : OwnedReefKeeperViewModel
+    @Binding var pendingReefKeeperVM : PendingReefKeeperViewModel
+//    var reefKeeperVM : PendingReefKeeperViewModel.OwnedReefKeeperViewModel? {
+//        pendingReefKeeperVM.ownedReefKeeperViewModel
+//    }
     
     var body: some View {
         List {
@@ -28,14 +31,14 @@ struct ReefyStyler: View {
         Section("Skins") {
             ForEach(skins){
                 ownedSkin in
-              
+                
                 if let skin = ownedSkin.skin {
-                    let isSelected = reefKeeperVM.reefKeeper.skin == skin
+                    let isSelected = pendingReefKeeperVM.ownedReefKeeperViewModel?.reefKeeper.skin == skin
                     Button(action: {
                         Task {
                             do {
                                 print("selecting")
-                                try await reefKeeperVM.selectSkin(skin: skin)
+                                try await pendingReefKeeperVM.selectSkin(skin: skin)
                             } catch {
                                 print("Failed to select skin: \(error)")
                             }
@@ -61,12 +64,12 @@ struct ReefyStyler: View {
             ForEach(hats){
                 ownedHat in
                 if let hat = ownedHat.hat {
-                    let isSelected = reefKeeperVM.reefKeeper.hat == hat
+                    let isSelected = reefKeeperVM?.reefKeeper.hat == hat
                     Button(action: {
                         Task {
                             do {
                                 print("selecting")
-                                try await reefKeeperVM.selectHat(hat: hat)
+                                try await reefKeeperVM?.selectHat(hat: hat)
                             } catch {
                                 print("Failed to select skin: \(error)")
                             }
@@ -93,12 +96,12 @@ struct ReefyStyler: View {
                 ownedTool in
                 
                 if let tool = ownedTool.tool {
-                    let isSelected = reefKeeperVM.reefKeeper.tool == tool
+                    let isSelected = reefKeeperVM?.reefKeeper.tool == tool
                     Button(action: {
                         Task {
                             do {
                                 print("selecting")
-                                try await reefKeeperVM.selectTool(tool: tool)
+                                try await reefKeeperVM?.selectTool(tool: tool)
                             } catch {
                                 print("Failed to select skin: \(error)")
                             }

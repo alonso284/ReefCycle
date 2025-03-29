@@ -13,7 +13,8 @@ struct ContentView: View {
 
     var body: some View {
         if let user = reefVM.user {
-            MainTabView(pendingReefKeeperVM: PendingReefKeeperViewModel(user: user))
+            @State var pendingReefKeeperVM = PendingReefKeeperViewModel(user: user)
+            MainTabView(pendingReefKeeperVM: $pendingReefKeeperVM)
         } else {
             if triedLoadingUser {
                 EditUserView()

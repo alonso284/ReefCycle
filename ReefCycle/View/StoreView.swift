@@ -14,7 +14,7 @@ struct StoreView: View {
     @Query var skins: [OwnedSkin]
     @Query var tools: [OwnedTool]
     
-    let reefKeeperVM: OwnedReefKeeperViewModel
+    @Binding var reefKeeperVM: OwnedReefKeeperViewModel
     
     var body: some View {
         NavigationStack {

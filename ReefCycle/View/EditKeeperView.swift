@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditKeeperView: View {
     @Environment(ReefCycleViewModel.self) private var reefVM: ReefCycleViewModel
-    let pendingReefKeeperVM: PendingReefKeeperViewModel
+    @Binding var pendingReefKeeperVM: PendingReefKeeperViewModel
     @State private var institution: Institution?
     @State private var id: String = ""
     

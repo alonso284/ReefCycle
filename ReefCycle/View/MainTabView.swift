@@ -8,50 +8,44 @@
 import SwiftUI
 
 struct MainTabView: View {
-    let pendingReefKeeperVM: PendingReefKeeperViewModel
+    @Binding var pendingReefKeeperVM: PendingReefKeeperViewModel
     @State var triedLoadingKeeper: Bool = false
-    
-        @State var editing: Bool = false
+    @State var editing: Bool = false
+    var ownedReefKeeperVM : PendingReefKeeperViewModel.OwnedReefKeeperViewModel? {
+        pendingReefKeeperVM.ownedReefKeeperViewModel
+    }
     
     var body: some View {
-        if let reefKeeper = pendingReefKeeperVM.reefKeeper {
-            let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
-            let ownedReefKeeperVM = OwnedReefKeeperViewModel(reefKeeper: reefKeeper)
-            
+        if let ownedReefKeeperVM {
             TabView {
                 Group {
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         NavigationStack {
-                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                            KeeperReefView(reefKeeper: ownedReefKeeperVM.reefKeeper)
                                 .sheet(isPresented: $editing, content: {
-                                    ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
-                                        .onDisappear {
-                                            Task {
-                                                await loadReefKeeper()
-                                            }
-                                        }
+                                    ReefyStyler(pendingReefKeeperVM: $pendingReefKeeperVM)
                                 })
-                                .toolbar {
-                                    Button("Edit", action: {
-                                        editing = true
-                                    })
-                                }
+//                                .toolbar {
+//                                    Button("Edit", action: {
+//                                        editing = true
+//                                    })
+//                                }
                         }
                     } else {
                         NavigationSplitView(sidebar: {
-                            ReefyStyler(reefKeeperVM: ownedReefKeeperVM)
+                            ReefyStyler(pendingReefKeeperVM: $pendingReefKeeperVM)
                         }, detail: {
-                            KeeperReefView(reefKeeperVM: reefKeeperVM)
+                            KeeperReefView(reefKeeper: ownedReefKeeperVM.reefKeeper)
                         })
                     }
                 }
                 .tabItem {
                     Label("Reef", systemImage: "fish")
                 }
-                StoreView(reefKeeperVM: ownedReefKeeperVM)
-                    .tabItem {
-                        Label("Store", systemImage: "storefront")
-                    }
+//                StoreView(reefKeeperVM: $ownedReefKeeperVM)
+//                    .tabItem {
+//                        Label("Store", systemImage: "storefront")
+//                    }
                 Ranking()
                     .tabItem {
                         Label("Ranking", systemImage: "star")
@@ -63,7 +57,7 @@ struct MainTabView: View {
             }
         } else {
             if triedLoadingKeeper {
-                EditKeeperView(pendingReefKeeperVM: pendingReefKeeperVM)
+                EditKeeperView(pendingReefKeeperVM: $pendingReefKeeperVM)
             } else {
                 ProgressView()
                     .task {
@@ -76,6 +70,9 @@ struct MainTabView: View {
     func loadReefKeeper() async {
         do {
             try await pendingReefKeeperVM.fetchReefKeeper()
+            if let reefKeeper = pendingReefKeeperVM.reefKeeper {
+                self.ownedReefKeeperVM = .init(reefKeeper: reefKeeper)
+            }
             triedLoadingKeeper = true
         } catch {
             print(error)

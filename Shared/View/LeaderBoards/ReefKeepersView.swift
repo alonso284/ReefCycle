@@ -18,10 +18,24 @@ struct ReefKeepersView: View {
             Section("reefKeepers"){
                 ForEach(reefKeepers) {
                     reefKeeper in
-                    let reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
-                    NavigationLink(destination: { ReefyView(reefKeeperVM: reefKeeperVM) }, label: {
-                        ReefKeeperPreview(reefKeeperVM: reefKeeperVM, verbose: false)
+                    @State var reefKeeperVM = ReefKeeperViewModel(reefKeeper: reefKeeper)
+                    NavigationLink(destination: { ReefyView(reefKeeper: reefKeeper) }, label: {
+                        if let user = reefKeeperVM.user {
+                            ReefKeeperPreview(reefKeeper: reefKeeper, user: user, verbose: false)
+                        } else {
+                            ProgressView()
+                            .onAppear {
+                                Task {
+                                    do {
+                                        try await reefKeeperVM.fetchUser()
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
+                        }
                     })
+
                 }
             }
         } else {

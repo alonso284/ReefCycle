@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct KeeperReefView: View {
-    let reefKeeperVM: ReefKeeperViewModel
+    let reefKeeper: ReefKeeper
+    let user: User? = nil
+    let institution: Institution? = nil
     
     var body: some View {
             ScrollView {
@@ -24,16 +26,16 @@ struct KeeperReefView: View {
                     }
                 }
                 
-                ReefyView(reefKeeperVM: reefKeeperVM)
+                ReefyView(reefKeeper: reefKeeper)
                     .navigationTitle("Reef")
             }
-            .refreshable {
-                do {
-                    try await reefKeeperVM.load()
-                } catch {
-                    print(error)
-                }
-            }
+//            .refreshable {
+//                do {
+//                    try await reefKeeperVM.load()
+//                } catch {
+//                    print(error)
+//                }
+//            }
     }
     
     var background: some View {
@@ -43,19 +45,9 @@ struct KeeperReefView: View {
     var institutionView : some View {
         ZStack {
             background
-            Group {
-                if let institution = reefKeeperVM.institution {
-                    let institutionVM = InstitutionViewModel(institution: institution)
-                    InstitutionPreview(institutionVM: institutionVM)
-                } else {
-                    Spacer()
-                        .onAppear {
-                            Task {
-                                await loadInstitution()
-                                
-                            }
-                        }
-                }
+            if let institution {
+                let institutionVM = InstitutionViewModel(institution: institution)
+                InstitutionPreview(institutionVM: institutionVM)
             }
         }
     }
@@ -63,17 +55,19 @@ struct KeeperReefView: View {
     var reefKeeperView: some View {
         ZStack {
             background
-            ReefKeeperPreview(reefKeeperVM: reefKeeperVM)
+            if let user {
+                ReefKeeperPreview(reefKeeper: reefKeeper, user: user)
+            }
         }
     }
     
-    func loadInstitution() async {
-        do {
-            try await reefKeeperVM.fetchInstitution()
-        } catch {
-            print(error)
-        }
-    }
+//    func loadInstitution() async {
+//        do {
+//            try await reefKeeperVM.fetchInstitution()
+//        } catch {
+//            print(error)
+//        }
+//    }
 }
 
 //#Preview {
