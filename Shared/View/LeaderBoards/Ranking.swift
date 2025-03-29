@@ -14,7 +14,7 @@ struct Ranking: View {
         NavigationStack {
             List {
                 if let stats = reefVM.stats {
-                    PieChartView(data: stats)
+                    PieChartView(data: stats).frame(width: 400, height: 400)
                 } else {
                     ProgressView()
                         .onAppear {

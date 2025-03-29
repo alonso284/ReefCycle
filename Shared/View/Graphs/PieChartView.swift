@@ -57,10 +57,10 @@ public struct PieChartView: View {
                     let frame = geometry[chartProxy.plotFrame!]
                     
                     VStack {
-                        Text("Institución con más reciclaje")
-                            .font(.callout)
+                        Text("Institución con \nmás reciclaje")
+                            .font(.callout).font(.body)
                             .foregroundStyle(.secondary)
-                        
+                            .multilineTextAlignment(.center)
                         if let top = topUniversity {
                             Text(top.name)
                                 .font(.title2.bold())
