@@ -18,10 +18,9 @@ struct KeeperReefView: View {
         ZStack {
             Color.clear
                        .overlay (
-                           Image("ReefBackgroundWide")
+                           Image("ReefBackgroundWideMod")
                                .resizable()
                                .aspectRatio(contentMode: .fill)
-//                               .border(.blue, width: 2)
                        )
                        .clipped()
                        .ignoresSafeArea()
@@ -29,6 +28,7 @@ struct KeeperReefView: View {
             VStack {
                 ZStack {
                     background
+                    //modify this hstack to have the reefstyler functionality and delete from main tab view
                     HStack {
                         ReefKeeperPreview(reefKeeper: reefKeeper, user: user)
                             .padding()
@@ -43,6 +43,7 @@ struct KeeperReefView: View {
                 Spacer()
                 ReefyView(reefKeeper: reefKeeper)
                     .offset(y: -30)
+                    .shadow(color: .black.opacity(0.5), radius: 10, x: 3, y: 3)
                 Spacer()
             }
         }

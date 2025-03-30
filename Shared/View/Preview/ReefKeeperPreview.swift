@@ -2,7 +2,7 @@
 //  ReefKeeperPreview.swift
 //  ReefCycle
 //
-//  Created by Alonso Huerta on 28/03/25.
+//  Created by Alonso Huerta on 28/03/25.Ro
 //
 
 import SwiftUI
@@ -33,22 +33,24 @@ struct ReefKeeperPreview: View {
                     Circle().foregroundStyle(user?.color ?? Color("ReefBackground"))
                         .frame(width: 80, height: 80)
                     Text(user?.emoji ?? "🪸")
-                        .font(.system(size: 50))
+                        .font(.system(size: 60))
                 }
+                .padding()
                 VStack (alignment: .leading){
                     Text(user?.username ?? "Anonymous")
                         .font(.headline)
                     if verbose {
                         if let date = user?.record.creationDate {
-                            Text("Member since \(date.shortDateString)")
+                            Text("Miembro desde \(date.shortDateString)")
                                 .font(.subheadline)
                         }
                         Text(reefKeeper.id)
                             .font(.subheadline)
-                        Text("Points: \(reefKeeper.points) pts")
+                        Text("Puntos Historicos: \(reefKeeper.points) pts")
                             .font(.subheadline)
                     }
                 }
+                .padding()
                 Spacer()
                 if showReefy {
                     ReefyView(reefKeeper: reefKeeper, size: 100)

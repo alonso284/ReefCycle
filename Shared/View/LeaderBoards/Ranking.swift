@@ -10,22 +10,38 @@ import SwiftUI
 struct Ranking: View {
     @Environment(ReefCycleViewModel.self) var reefVM: ReefCycleViewModel
     @State private var isLoading = false
+    let reefKeeper: ReefKeeper
+    let user: User?
+    let institution: Institution
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Pie Chart Section
-                    pieChartSection
+            HStack(spacing: 20) {
+                pieChartSection
+                VStack{
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 20).foregroundStyle(Color(UIColor.secondarySystemBackground).opacity(0.7))
+                        VStack(spacing: 6){
+                            ReefKeeperPreview(reefKeeper: reefKeeper, user: user)
+                            ProfileInstitutionPreview(institution: institution)
+                        }
+                        .padding()
+                    }
+                    .padding()
+                    .cornerRadius(20)
                     
-                    // Institutions Section
-                    institutionsSection
+                    Spacer()
+                    
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 20).foregroundStyle(Color(UIColor.secondarySystemBackground).opacity(0.7))
+                        institutionsSection
+                            .padding()
+                    }
+                    .padding()
+                    .cornerRadius(20)
                 }
-                .padding(.horizontal)
             }
-            .refreshable {
-                await loadLeaderBoards()
-            }
+            .padding(.horizontal)
             .navigationTitle("Leaderboard")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -68,13 +84,15 @@ struct Ranking: View {
     
     private var institutionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Institutions")
-                .font(.headline)
-                .padding(.top)
+            Text("Instituciones")
+                .font(.title2)
+                .fontWeight(.bold)
+            Divider()
             
             if let institutions = reefVM.sortedInsitutionsByImpact {
                 ForEach(Array(institutions.enumerated()), id: \.element.id) { index, institution in
                     institutionRow(institution: institution, rank: index + 1)
+                    Divider()
                 }
             } else {
                 ForEach(0..<3, id: \.self) { _ in
@@ -82,6 +100,7 @@ struct Ranking: View {
                 }
                 .redacted(reason: .placeholder)
             }
+            Spacer()
         }
     }
     
@@ -136,15 +155,16 @@ struct Ranking: View {
                 }
                 
                 // Institution info
-                VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 4) {
                     Text(institution.name)
                         .fontWeight(.semibold)
                     
-                    Text(String(reefVM.impact(institution: institution)))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    Text("(\(institution.code))")
+                    
+//                    Text(String(reefVM.impact(institution: institution)))
+//                        .font(.caption)
+//                        .foregroundColor(.secondary)
                 }
-                
                 Spacer()
                 
                 Image(systemName: "chevron.right")
@@ -184,6 +204,3 @@ struct Ranking: View {
     }
 }
 
-#Preview {
-    Ranking()
-}

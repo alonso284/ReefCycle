@@ -6,10 +6,25 @@ import AVFoundation
 struct PlasticClassifierView: View {
     @State private var selectedImage: UIImage?
     @State private var classificationResult: String?
+    @State private var classificationConfidence: Int?
     @State private var isShowingCamera = false
     @State private var isShowingAR = false
+    @State private var isShowingInfo = false
+
     @State private var hasLaunched = false
     @State private var animateContent = false
+    
+    private let labelDescriptions: [String: String] = [
+        "1_polyethylene_PET": "Polietileno Tereftalato (PET)",
+        "2_high_density_polyethylene_PE-HD": "Polietileno de Alta Densidad (HDPE)",
+        "3_polyvinylchloride_PVC": "Cloruro de Polivinilo (PVC)",
+        "4_low_density_polyethylene_PE-LD": "Polietileno de Baja Densidad (LDPE)",
+        "5_polypropylene_PP": "Polipropileno (PP)",
+        "6_polystyrene_PS": "Poliestireno (PS)",
+        "7_other_resins": "Otros Plásticos",
+        "8_no_plastic": "Sin Plástico Detectado"
+    ]
+    
     
     // Card dimensions
     private let cardWidth: CGFloat = 320
@@ -55,7 +70,7 @@ struct PlasticClassifierView: View {
                         optionCard(
                             icon: "camera.viewfinder",
                             title: "Clasificador Inteligente",
-                            description: "Apunta tu camara al lado inferior de un botellas de plástico para clasificarla con IA.",
+                            description: "Apunta tu camara al lado inferior de un botellas de plástico para clasificarla con Machine Learning",
                             buttonLabel: "Tomar Foto"
                         ) {
                             isShowingCamera = true
@@ -110,6 +125,20 @@ struct PlasticClassifierView: View {
                 animateContent = true
             }
         }
+        .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowingInfo = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            .navigationDestination(isPresented: $isShowingInfo) {
+                InfoPlasticsView()
+            }
+
     }
     
     // MARK: - Component Views
@@ -331,7 +360,7 @@ struct PlasticClassifierView: View {
                 
                 if let result = classificationResult {
                     VStack(spacing: 12) {
-                        Text("Clasificación:")
+                        Text("Clasificación")
                             .font(.headline)
                             .foregroundColor(.secondary)
                         
@@ -340,9 +369,15 @@ struct PlasticClassifierView: View {
                                 .foregroundColor(.green)
                                 .font(.system(size: 24))
                             
-                            Text(result)
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.green)
+                            VStack{
+                                Text(result)
+                                    .font(.system(size: 24, weight: .bold))
+                                if let confidence = classificationConfidence{
+                                    Text("Confianza: \(confidence)%")
+                                }
+                            }
+                            .foregroundColor(.green)
+                            
                         }
                         .padding()
                         .background(
@@ -350,7 +385,7 @@ struct PlasticClassifierView: View {
                                 .fill(Color.green.opacity(0.1))
                         )
                     }
-                    .padding(.vertical)
+                    .padding()
                 } else {
                     VStack {
                         ProgressView()
@@ -365,39 +400,39 @@ struct PlasticClassifierView: View {
                 
                 Spacer()
                 
-                Button {
-                    withAnimation(.spring()) {
-                        resetAndLaunchCamera()
+                VStack{
+                    Button {
+                        withAnimation(.spring()) {
+                            resetAndLaunchCamera()
+                        }
+                    } label: {
+                        Label("Clasificar Otro Objeto", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.headline)
                     }
-                } label: {
-                    Label("Clasificar Otra Botella", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.headline)
+                    .buttonStyle(FilledButtonStyle())
+                    .padding(.horizontal)
+                    
+                    Button {
+                        withAnimation(.spring()) {
+                            selectedImage = nil
+                            classificationResult = nil
+                        }
+                    } label: {
+                        Label("Volver al Inicio", systemImage: "house")
+                            .font(.headline)
+                    }
+                    .buttonStyle(OutlinedButtonStyle())
+                    .padding(.horizontal)
                 }
-                .buttonStyle(FilledButtonStyle())
                 .padding(.bottom)
                 
-                Button {
-                    withAnimation(.spring()) {
-                        selectedImage = nil
-                        classificationResult = nil
-                    }
-                } label: {
-                    Label("Volver al Inicio", systemImage: "house")
-                        .font(.headline)
-                }
-                .buttonStyle(OutlinedButtonStyle())
-                .padding(.bottom)
             }
             .frame(width: cardWidth, height: cardHeight)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color(UIColor.systemBackground).opacity(0.9))
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color("ReefyBlue").opacity(0.3), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 5)
+            
         }
     }
     
@@ -412,20 +447,25 @@ struct PlasticClassifierView: View {
     private func classifyImage() {
         guard let image = selectedImage,
               let ciImage = CIImage(image: image) else {
-            classificationResult = "Failed to prepare image for classification"
+            classificationResult = "Error: No se pudo preparar la imagen para clasificación"
+            classificationConfidence = 0
             return
         }
         
-        // Clear the result first to show loading state
+        // Reset to show loading UI
         classificationResult = nil
         
+    
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let model = try BottleAmountClassifier_1()
-                let request = VNCoreMLRequest(model: try VNCoreMLModel(for: model.model)) { request, error in
+                let visionModel = try VNCoreMLModel(for: model.model)
+                
+                let request = VNCoreMLRequest(model: visionModel) { request, error in
                     if let error = error {
                         DispatchQueue.main.async {
-                            classificationResult = "Error: \(error.localizedDescription)"
+                            classificationResult = "Error de clasificación: \(error.localizedDescription)"
+                            classificationConfidence = 0
                         }
                         return
                     }
@@ -433,14 +473,20 @@ struct PlasticClassifierView: View {
                     guard let results = request.results as? [VNClassificationObservation],
                           let topResult = results.first else {
                         DispatchQueue.main.async {
-                            classificationResult = "No classification results"
+                            classificationResult = "No se encontraron resultados"
+                            classificationConfidence = 0
                         }
                         return
                     }
                     
+                    let identifier = topResult.identifier
+                    let confidence = Int(topResult.confidence * 100)
+                    let readableDescription = labelDescriptions[identifier] ?? "Tipo de plástico desconocido"
+                    
                     DispatchQueue.main.async {
                         withAnimation {
-                            classificationResult = "\(topResult.identifier) (\(Int(topResult.confidence * 100))%)"
+                            classificationResult = readableDescription
+                            classificationConfidence = confidence
                         }
                     }
                 }
@@ -449,12 +495,14 @@ struct PlasticClassifierView: View {
                 try handler.perform([request])
             } catch {
                 DispatchQueue.main.async {
-                    classificationResult = "Error loading model: \(error.localizedDescription)"
+                    classificationResult = "Error al cargar el modelo: \(error.localizedDescription)"
+                    classificationConfidence = 0
                 }
             }
         }
     }
 }
+
 
 // MARK: - Custom Button Styles
 

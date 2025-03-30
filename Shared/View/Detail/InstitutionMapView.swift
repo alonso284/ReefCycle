@@ -38,16 +38,16 @@ struct InstitutionView: View {
     }
     
     let events: [Event] = [
-        Event(name: "Earth Day Cleanup", date: Calendar.current.date(from: DateComponents(year: 2025, month: 4, day: 22))!),
-        Event(name: "Campus Recycling Drive", date: Calendar.current.date(from: DateComponents(year: 2025, month: 5, day: 12))!),
-        Event(name: "Beach Restoration Day", date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 8))!),
-        Event(name: "Neighborhood Swap Meet", date: Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 30))!),
-        Event(name: "Plastic-Free Challenge Week", date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 15))!),
-        Event(name: "Recycle-A-Thon", date: Calendar.current.date(from: DateComponents(year: 2025, month: 8, day: 5))!),
-        Event(name: "World Environment Day Collection", date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 5))!),
-        Event(name: "Recyclers Appreciation Day", date: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 18))!),
-        Event(name: "Zero Waste Challenge", date: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 3))!),
-        Event(name: "Winter Cleanup Kickoff", date: Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 1))!)
+        Event(name: "Limpieza del Día de la Tierra", date: Calendar.current.date(from: DateComponents(year: 2025, month: 4, day: 22))!),
+        Event(name: "Campaña de Reciclaje del Campus", date: Calendar.current.date(from: DateComponents(year: 2025, month: 5, day: 12))!),
+        Event(name: "Día de Restauración de Playas", date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 8))!),
+        Event(name: "Mercado de Intercambio Vecinal", date: Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 30))!),
+        Event(name: "Semana de Desafío Sin Plástico", date: Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 15))!),
+        Event(name: "Reciclatón", date: Calendar.current.date(from: DateComponents(year: 2025, month: 8, day: 5))!),
+        Event(name: "Colecta del Día Mundial del Medio Ambiente", date: Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 5))!),
+        Event(name: "Día de Reconocimiento a Recicladores", date: Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 18))!),
+        Event(name: "Desafío Cero Residuos", date: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 3))!),
+        Event(name: "Inicio de Limpieza Invernal", date: Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 1))!)
     ]
     
     var body: some View {
@@ -56,7 +56,7 @@ struct InstitutionView: View {
          
             List {
                 
-                Section("Location"){
+                Section("Ubicación"){
                     Map(coordinateRegion: $region, interactionModes: [], annotationItems: [institution] ) { inst in
                         MapAnnotation(coordinate: inst.location?.coordinate ?? CLLocationCoordinate2D()) {
                             Image(systemName: "mappin.circle.fill")
@@ -71,7 +71,7 @@ struct InstitutionView: View {
                     .cornerRadius(15)
                 }
                 
-                Section("Recolation Events") {
+                Section("Eventos de Recolección") {
                     ForEach(events) { event in
                         HStack {
                             VStack(alignment: .leading) {
@@ -101,7 +101,7 @@ struct InstitutionView: View {
             
             // Institution info on the right
             List {
-                Section("Institution") {
+                Section("Institución") {
                     HStack {
                         Spacer()
                         VStack(alignment: .center, spacing: 12) {
@@ -125,7 +125,7 @@ struct InstitutionView: View {
                                 .multilineTextAlignment(.center)
                             
                             if let sum_points {
-                                Text("Total points: \(sum_points)")
+                                Text("Puntos totales: \(sum_points)")
                                     .font(.title2.bold())
                                     .multilineTextAlignment(.center)
                             }

@@ -38,11 +38,14 @@ struct PlasticType: Identifiable, Hashable {
     }
 }
 
-struct PlasticRecyclingBentoView: View {
+struct InfoPlasticsView: View {
     @State private var searchText = ""
     @State private var selectedPlastic: PlasticType? = nil
     @State private var showingDetail = false
+    @State private var showInfoAlert = false
+    @Environment(\.colorScheme) private var colorScheme
     
+    // Plastics data remains the same
     let plasticTypes: [PlasticType] = [
         PlasticType(
             code: "1",
@@ -206,18 +209,47 @@ struct PlasticRecyclingBentoView: View {
     }
     
     let columns = [
-        GridItem(.adaptive(minimum: 320, maximum: 400), spacing: 16)
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16),
+        
     ]
+
     
     var body: some View {
-        NavigationView {
+        VStack(spacing: 0) {
+           
+            // Main content
             ScrollView {
-                VStack(alignment: .leading) {
-                    Text("Guía de Plásticos para Reciclaje")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.horizontal)
-                    
+                if filteredPlastics.isEmpty {
+                    VStack(spacing: 24) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        
+                        Text("No se encontraron resultados para \"\(searchText)\"")
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
+                        
+                        Button(action: {
+                            searchText = ""
+                        }) {
+                            Text("Borrar búsqueda")
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.blue)
+                                )
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.top, 80)
+                } else {
                     LazyVGrid(columns: columns, spacing: 16) {
                         ForEach(filteredPlastics) { plastic in
                             PlasticCard(plastic: plastic)
@@ -225,155 +257,291 @@ struct PlasticRecyclingBentoView: View {
                                     selectedPlastic = plastic
                                     showingDetail = true
                                 }
+                                .accessibilityElement(children: .combine)
+                                .accessibilityLabel("Plástico tipo \(plastic.code), \(plastic.name). Reciclabilidad: \(plastic.recyclabilityLevel.rawValue)")
+                                .accessibilityHint("Toca para ver detalles")
                         }
                     }
-                    .padding()
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 32)
+
                 }
             }
-            .background(Color(.systemGray6))
-            .navigationBarTitle("", displayMode: .inline)
-            .sheet(isPresented: $showingDetail) {
-                if let selectedPlastic = selectedPlastic {
-                    PlasticDetailSheet(plastic: selectedPlastic, isPresented: $showingDetail)
-                }
+            .background(Color(.systemGroupedBackground))
+            
+        }
+        .sheet(isPresented: $showingDetail) {
+            if let selectedPlastic = selectedPlastic {
+                PlasticDetailSheet(plastic: selectedPlastic, isPresented: $showingDetail)
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .alert(isPresented: $showInfoAlert) {
+            Alert(
+                title: Text("Códigos de Reciclaje"),
+                message: Text("Los números dentro de los símbolos de reciclaje indican el tipo de plástico. Esta guía te ayuda a identificar los diferentes tipos y cómo reciclarlos correctamente."),
+                dismissButton: .default(Text("Entendido"))
+            )
+        }
+        .navigationBarTitle("Guia de Reciclaje", displayMode: .large)
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing){
+                Button(action: {
+                    showInfoAlert = true
+                }) {
+                    Image(systemName: "info.circle")
+                }
+                .accessibilityLabel("Información sobre los códigos de reciclaje")
+            }
+        }
     }
 }
 
 struct PlasticCard: View {
     let plastic: PlasticType
-    
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(plastic.recyclabilityLevel.color)
-                        .frame(width: 50, height: 50)
-                    
-                    Text(plastic.code)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                }
-                
-                VStack(alignment: .leading) {
-                    Text(plastic.name)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .lineLimit(1)
-                    
-                    Text(plastic.recyclability)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                }
-                .padding(.leading, 8)
-                
-                Spacer()
-            }
-            
-            Divider()
-            
-            Text("Ejemplos: \(plastic.examples.prefix(2).joined(separator: ", "))")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(2)
-            
-            Spacer()
-            
-            HStack {
-                Image(systemName: "arrow.right.circle.fill")
-                    .foregroundColor(plastic.recyclabilityLevel.color)
-                Text("Tocar para más información")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding()
-        .frame(height: 180)
-        .background(
+        VStack(spacing: 0) {
+            // Card background
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(UIColor.systemBackground))
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        )
+                .fill(colorScheme == .dark ? Color(UIColor.secondarySystemBackground) : Color.white)
+                .overlay(
+                    VStack(spacing: 8) {
+                        // Code Circle
+                        ZStack {
+                            Circle()
+                                .fill(plastic.recyclabilityLevel.color)
+                                .frame(width: 60, height: 60)
+                                .shadow(color: plastic.recyclabilityLevel.color.opacity(0.4), radius: 4, x: 0, y: 2)
+
+                            Text(plastic.code)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        }
+                        .padding(.top, 12)
+
+                        // Name and recyclability
+                        Text(plastic.name.split(separator: " ").first ?? "")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
+
+                        Text(plastic.recyclabilityLevel.rawValue)
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule()
+                                    .fill(plastic.recyclabilityLevel.color.opacity(0.2))
+                            )
+                            .foregroundColor(plastic.recyclabilityLevel.color)
+
+                        // Examples
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Ejemplos:")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text(plastic.examples.prefix(2).joined(separator: ", "))
+                                .font(.caption2)
+                                .foregroundColor(.primary.opacity(0.8))
+                                .lineLimit(2)
+                                .frame(height: 32, alignment: .topLeading)
+                        }
+                        .padding(.horizontal, 12)
+
+                        Spacer()
+
+                        Divider()
+                            .padding(.horizontal, 12)
+
+                        // View details button
+                        HStack {
+                            Image(systemName: "info.circle")
+                                .font(.caption)
+
+                            Text("Detalles")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                        }
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity)
+                        .background(plastic.recyclabilityLevel.color.opacity(0.1))
+                        .foregroundColor(plastic.recyclabilityLevel.color)
+                        .cornerRadius(8)
+                        .padding(.horizontal, 12)
+                        .padding(.bottom, 12)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                )
+        }
+        .frame(height: 260) // fixed consistent height
     }
 }
+
 
 struct PlasticDetailSheet: View {
     let plastic: PlasticType
     @Binding var isPresented: Bool
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    HStack {
+                    // Header with plastic code and badge
+                    HStack(alignment: .top) {
                         ZStack {
                             Circle()
                                 .fill(plastic.recyclabilityLevel.color)
                                 .frame(width: 80, height: 80)
+                                .shadow(color: plastic.recyclabilityLevel.color.opacity(0.4), radius: 6, x: 0, y: 3)
                             
-                            Text(plastic.code)
-                                .font(.system(size: 36))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                        }
-                        
-                        VStack(alignment: .leading) {
-                            Text(plastic.name)
-                                .font(.title)
-                                .fontWeight(.bold)
-                            
-                            HStack {
-                                Label("Reciclabilidad:", systemImage: "arrow.3.trianglepath")
-                                    .fontWeight(.medium)
-                                Text(plastic.recyclability)
-                                    .foregroundColor(plastic.recyclabilityLevel.color)
+                            VStack(spacing: 0) {
+                                Text(plastic.code)
+                                    .font(.system(size: 36))
                                     .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                
+                                Text(plastic.recyclabilityLevel.rawValue)
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.white.opacity(0.9))
                             }
                         }
-                        .padding(.leading)
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(plastic.name)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Label {
+                                    Text("Reciclabilidad: ")
+                                        .foregroundColor(.secondary)
+                                        .fontWeight(.medium) +
+                                    Text(plastic.recyclability)
+                                        .foregroundColor(plastic.recyclabilityLevel.color)
+                                        .fontWeight(.semibold)
+                                } icon: {
+                                    Image(systemName: "arrow.3.trianglepath")
+                                        .foregroundColor(plastic.recyclabilityLevel.color)
+                                }
+                                .font(.callout)
+                            }
+                        }
+                        .padding(.leading, 16)
                         
                         Spacer()
                     }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(colorScheme == .dark ? Color(UIColor.secondarySystemBackground) : Color.white)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                    )
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        DetailSectionView(title: "Características Físicas", systemImage: "list.bullet") {
+                    // Characteristics
+                    DetailSectionView(
+                        title: "Características Físicas",
+                        systemImage: "list.bullet",
+                        color: plastic.recyclabilityLevel.color
+                    ) {
+                        VStack(alignment: .leading, spacing: 8) {
                             ForEach(plastic.characteristics, id: \.self) { characteristic in
-                                Label(characteristic, systemImage: "circle.fill")
-                                    .labelStyle(.titleAndIcon)
-                                    .font(.body)
+                                Label(characteristic, systemImage: "checkmark.circle.fill")
+                                    .foregroundColor(.primary)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.primary)
+                                    .padding(.vertical, 2)
                             }
-                        }
-                        
-                        DetailSectionView(title: "Ejemplos Comunes", systemImage: "shippingbox") {
-                            ForEach(plastic.examples, id: \.self) { example in
-                                Label(example, systemImage: "circle.fill")
-                                    .labelStyle(.titleAndIcon)
-                                    .font(.body)
-                            }
-                        }
-                        
-                        DetailSectionView(title: "Proceso de Reciclaje", systemImage: "arrow.triangle.2.circlepath") {
-                            Text(plastic.process)
-                                .font(.body)
-                        }
-                        
-                        DetailSectionView(title: "Cómo Desechar", systemImage: "trash") {
-                            Text(plastic.disposal)
-                                .font(.body)
                         }
                     }
+                    
+                    // Examples
+                    DetailSectionView(
+                        title: "Ejemplos Comunes",
+                        systemImage: "shippingbox",
+                        color: plastic.recyclabilityLevel.color
+                    ) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 130, maximum: .infinity))], spacing: 8) {
+                            ForEach(plastic.examples, id: \.self) { example in
+                                HStack(spacing: 8) {
+                                    Circle()
+                                        .fill(plastic.recyclabilityLevel.color.opacity(0.3))
+                                        .frame(width: 6, height: 6)
+                                    
+                                    Text(example)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.primary)
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        }
+                    }
+                    
+                    // Recycling process
+                    DetailSectionView(
+                        title: "Proceso de Reciclaje",
+                        systemImage: "arrow.triangle.2.circlepath",
+                        color: plastic.recyclabilityLevel.color
+                    ) {
+                        Text(plastic.process)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                            .padding(.vertical, 4)
+                    }
+                    
+                    // Disposal
+                    DetailSectionView(
+                        title: "Cómo Desechar Correctamente",
+                        systemImage: "trash",
+                        color: plastic.recyclabilityLevel.color,
+                        isHighlighted: true
+                    ) {
+                        HStack(spacing: 16) {
+                            Image(systemName: getDisposalIcon(for: plastic))
+                                .font(.title)
+                                .foregroundColor(plastic.recyclabilityLevel.color)
+                                .frame(width: 40, height: 40)
+                                .padding(8)
+                                .background(
+                                    Circle()
+                                        .fill(plastic.recyclabilityLevel.color.opacity(0.2))
+                                )
+                            
+                            Text(plastic.disposal)
+                                .font(.subheadline)
+                                .foregroundStyle(.primary)
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    
+                    Spacer(minLength: 40)
                 }
                 .padding()
             }
+            .background(Color(.systemGroupedBackground))
             .navigationBarTitle("Plástico Tipo \(plastic.code)", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cerrar") {
+            .navigationBarItems(trailing: Button(action: {
                 isPresented = false
+            }) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
             })
+        }
+    }
+    
+    private func getDisposalIcon(for plastic: PlasticType) -> String {
+        if plastic.code == "1" || plastic.code == "2" || plastic.code == "4" || plastic.code == "5" {
+            return "arrow.down.doc.fill" // Contenedor amarillo
+        } else {
+            return "building.2.fill" // Punto limpio
         }
     }
 }
@@ -381,29 +549,43 @@ struct PlasticDetailSheet: View {
 struct DetailSectionView<Content: View>: View {
     let title: String
     let systemImage: String
+    let color: Color
     let content: Content
+    let isHighlighted: Bool
     
-    init(title: String, systemImage: String, @ViewBuilder content: () -> Content) {
+    init(
+        title: String,
+        systemImage: String,
+        color: Color,
+        isHighlighted: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) {
         self.title = title
         self.systemImage = systemImage
+        self.color = color
+        self.isHighlighted = isHighlighted
         self.content = content()
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: systemImage)
-                .font(.title3)
-                .fontWeight(.bold)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Label(title, systemImage: systemImage)
+                    .font(.headline)
+                    .foregroundColor(isHighlighted ? color : .primary)
+            }
             
             content
-                .padding(.leading)
+                .padding(.leading, 4)
         }
         .padding()
-        .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(UIColor.secondarySystemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(isHighlighted ? color.opacity(0.5) : Color.clear, lineWidth: 2)
+                )
+        )
     }
-}
-
-#Preview {
-    PlasticRecyclingBentoView()
 }

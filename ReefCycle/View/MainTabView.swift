@@ -63,22 +63,25 @@ struct MainTabView: View {
 //                    }
                 }
                 .tabItem {
-                    Label("Reef", systemImage: "fish")
+                    Label("Mi Reefy", systemImage: "fish")
                 }
                 StoreView(reefKeeperVM: $pendingReefKeeperVM)
                     .tabItem {
-                        Label("Store", systemImage: "storefront")
+                        Label("Tienda", systemImage: "storefront")
                     }
-                Ranking()
+                Ranking(reefKeeper: reefKeeper, user: pendingReefKeeperVM.user, institution: institution)
                     .tabItem {
-                        Label("Ranking", systemImage: "star")
+                        Label("Leaderboard", systemImage: "star")
                     }
                 
+                NavigationStack {
+                    PlasticClassifierView()
+                }
+                .tabItem {
+                    Label("Recicla", systemImage: "camera")
+                }
                 
-                PlasticClassifierView()
-                    .tabItem {
-                        Label("Classifier", systemImage: "camera")
-                    }
+                
             }
         } else {
             if triedLoadingKeeper {

@@ -38,6 +38,7 @@ struct ReefyView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: size, height: size)
+                    
             }
         }
         
