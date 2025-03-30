@@ -28,9 +28,9 @@ struct QRCodeScannerExampleView: View {
        
        // Optional: You can map points like this
        let puntosPorCantidad: [String: Int] = [
-           "pocas": 30,
-           "normal": 60,
-           "muchas": 100
+           "pocas": 300,
+           "normal": 600,
+           "muchas": 1000
        ]
     
     var body: some View {
@@ -146,7 +146,7 @@ struct QRCodeScannerExampleView: View {
                 return
             }
 
-            try await viewModel.registerPoints(reefKeeper: reefKeeper, points: 10) // add 10 points or whatever value you want
+            try await viewModel.registerPoints(reefKeeper: reefKeeper,  points: puntosPorCantidad[selectedCantidad] ?? 0 ) // add 10 points or whatever value you want
             message = "✅ Puntos añadidos a: \(id)"
         } catch {
             message = "❌ Error: \(error.localizedDescription)"
