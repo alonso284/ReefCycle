@@ -16,27 +16,36 @@ struct SectionCarousel<Item: Hashable>: View {
     let previewName: (Item) -> String
     let itemName: (Item) -> String
     let price: (Item) -> Int
-
+    
+    // Add animation state
+    @State private var isHovering: Item? = nil
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             Text(title)
-                .font(.title2)
-                .bold()
+                .font(.title2.bold())
                 .padding(.horizontal)
-
+            
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
+                LazyHStack(spacing: 16) {
                     ForEach(items, id: \.self) { item in
                         let owned = isOwned(item)
+                        let isHoveringThis = isHovering == item
                         
                         ZStack {
+                            // Item card background with dynamic elevation
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.ultraThinMaterial)
-                                .cornerRadius(21)
-
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(owned ? Color.green.opacity(0.3) : Color.accentColor.opacity(0.2), lineWidth: 1.5)
+                                )
+                            
                             Button {
-                                Task {
-                                    await action(item)
+                                if !owned {
+                                    Task {
+                                        await action(item)
+                                    }
                                 }
                             } label: {
                                 StoreComponent(
@@ -45,21 +54,45 @@ struct SectionCarousel<Item: Hashable>: View {
                                     price: price(item)
                                 )
                             }
+                            .buttonStyle(ScaleButtonStyle())
                             .disabled(owned)
-                            .opacity(owned ? 0.5 : 1.0)
+                            
+                            // Overlay for owned items
+                            if owned {
+                                VStack {
+                                    Spacer()
+                                    Text("Adquirido")
+                                        .font(.caption.bold())
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(Color.green)
+                                        .cornerRadius(12)
+                                    Spacer().frame(height: 16)
+                                }
+                            }
                         }
-                        .shadow(color: .black.opacity(0.2), radius: 6)
-                        .frame(width: 160, height: 200) // Adjusted to match inner content
-                        .padding(.vertical, 4)
-                        .cornerRadius(21)
-
-
-                       
+                        .frame(width: 160, height: 210)
+                        .padding(.vertical, 8)
+                        .onHover { hovering in
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                isHovering = hovering ? item : nil
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal)
+                .padding(.bottom, 8)
             }
-            .padding(.horizontal)
         }
+    }
+}
+
+// Custom button style for nicer touch feedback
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }

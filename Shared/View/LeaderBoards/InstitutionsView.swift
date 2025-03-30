@@ -16,12 +16,10 @@ struct InstitutionsView: View {
     var body: some View {
         if let institutions {
             Section("Institutions"){
-                ForEach(institutions) {
-                    institution in
-//                    let institutionVM = InstitutionViewModel(institution: institution)
-                    NavigationLink(destination: { InstitutionView(institution: institution) }, label: {
-                        InstitutionPreview(institution: institution)
-                    })
+                ForEach(Array(institutions.enumerated()), id: \.element.id) { index, institution in
+                    NavigationLink(destination: InstitutionView(institution: institution)) {
+                        NumInstitutionPreview(institution: institution, num: index + 1)
+                    }
                 }
             }
         } else {

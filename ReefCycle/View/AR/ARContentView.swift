@@ -11,6 +11,8 @@ struct ARContentView: View {
     @StateObject private var viewModel = TrashcanPlacementViewModel()
     @State private var showHelp = false
     @State private var navigateToSample = false
+    @Environment(\.presentationMode) var presentationMode
+    
     
     var body: some View {
         NavigationView {
@@ -47,23 +49,17 @@ struct ARContentView: View {
                         Spacer()
                         CompletionOverlay(
                             correctAnswers: viewModel.correctAnswers,
-                            totalQuestions: 3
-                        ) {
-                            // Navigate to SampleView
-                            navigateToSample = true
-                        }
+                            totalQuestions: 3,
+                            onFinish: {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        )
+
                     }
                     .transition(.scale.combined(with: .opacity))
                     .animation(.easeInOut, value: viewModel.showCompletionOverlay)
                     .zIndex(10)
                 }
-                
-                // Add NavigationLink for programmatic navigation
-                NavigationLink(
-                    destination: SampleView(),
-                    isActive: $navigateToSample,
-                    label: { EmptyView() }
-                )
             }
             .sheet(isPresented: $showHelp) {
                 HelpView()
@@ -117,8 +113,10 @@ struct BottomControlsView: View {
                 
                 VStack(spacing: 20) {
                     Text("Confirma la ubicación, posicion y escala de los contenedores")
+                    
                 }
                 .padding()
+                .foregroundColor(.white)
                 .background(Color.black.opacity(0.7))
                 .cornerRadius(15)
                 
