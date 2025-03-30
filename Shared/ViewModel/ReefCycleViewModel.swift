@@ -46,6 +46,22 @@ class ReefCycleViewModel {
         return stats
     }
     
+    func impact(institution: Institution) -> Int {
+        return reefKeepers?.reduce(into: 0) { result, reefKeeper in
+            if reefKeeper.institution.recordID == institution.id {
+                result += reefKeeper.points
+            }
+        } ?? 0
+    }
+    
+    var sortedInsitutionsByImpact: [Institution]? {
+        guard let institutions else { return nil }
+
+        return institutions.sorted {
+            impact(institution: $0) > impact(institution: $1)
+        }
+    }
+    
     func user(from reference: CKRecord.Reference) async throws -> User? {
         let userRecordID = reference.recordID
 

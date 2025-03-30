@@ -72,7 +72,7 @@ struct Ranking: View {
                 .font(.headline)
                 .padding(.top)
             
-            if let institutions = reefVM.institutions?.sorted(by: { $0.name < $1.name }) {
+            if let institutions = reefVM.sortedInsitutionsByImpact {
                 ForEach(Array(institutions.enumerated()), id: \.element.id) { index, institution in
                     institutionRow(institution: institution, rank: index + 1)
                 }
@@ -140,7 +140,7 @@ struct Ranking: View {
                     Text(institution.name)
                         .fontWeight(.semibold)
                     
-                    Text("10000")
+                    Text(String(reefVM.impact(institution: institution)))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
